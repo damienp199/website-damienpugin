@@ -1,0 +1,77 @@
+---
+import { site } from "../content/site";
+const { about } = site;
+
+// Simple inline-markdown → HTML : supporte **gras** uniquement (suffisant pour la copy actuelle).
+const renderInline = (s: string) =>
+  s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+---
+
+<section id="about" class="about border-t hairline" aria-labelledby="about-title">
+  <div class="container-prose section-pad">
+    <div class="about-grid">
+      <header class="about-head fade-up">
+        <p class="eyebrow">{about.eyebrow}</p>
+        <h2 id="about-title" class="about-title">
+          {about.title}<br />{about.titleLine2}<br /><em>{about.titleAccent}</em>
+        </h2>
+      </header>
+
+      <div class="about-body fade-up">
+        {about.paragraphs.map((p) => (
+          <p set:html={renderInline(p)} />
+        ))}
+        <p class="about-outro">
+          <a href={about.outro.linkHref} class="link-underline link-draw">{about.outro.linkText}</a>
+          {" "}{about.outro.suffix}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-pad { padding-block: clamp(4rem, 10vh, 7rem); }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.25fr;
+    gap: 4rem;
+    align-items: start;
+  }
+  .about-title {
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin-top: 0.85rem;
+  }
+  .about-title em {
+    font-style: italic;
+    color: var(--color-gold);
+  }
+
+  .about-body {
+    max-width: 36rem;
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--color-ink-2);
+  }
+  .about-body p + p {
+    margin-top: 1.1rem;
+  }
+  .about-body strong {
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .about-outro {
+    margin-top: 1.75rem !important;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-hairline);
+    font-family: var(--font-display);
+    font-style: italic;
+  }
+
+  @media (max-width: 900px) {
+    .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  }
+</style>

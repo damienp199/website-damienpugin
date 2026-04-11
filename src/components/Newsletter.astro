@@ -1,0 +1,68 @@
+---
+import EmailForm from "./EmailForm.astro";
+import { site } from "../content/site";
+const { newsletter, kit } = site;
+---
+
+<section id="newsletter" class="news border-t hairline" aria-labelledby="news-title">
+  <div class="news-inner">
+    <div class="container-narrow news-content">
+      <p class="eyebrow fade-up">{newsletter.eyebrow}</p>
+      <h2 id="news-title" class="news-title fade-up">
+        {newsletter.title}<br /><em>{newsletter.titleAccent}</em>
+      </h2>
+      <p class="news-sub fade-up">{newsletter.sub}</p>
+
+      <div class="news-form fade-up">
+        <EmailForm
+          id="newsletter-form"
+          variant="block"
+          formId={kit.formId}
+          cta={newsletter.cta}
+          placeholder={newsletter.placeholder}
+        />
+      </div>
+
+      <p class="news-disclaimer fade-up">{newsletter.disclaimer}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .news {
+    background: white;
+  }
+  .news-inner {
+    padding-block: clamp(5rem, 12vh, 9rem);
+  }
+  .news-content {
+    text-align: center;
+  }
+  .news-title {
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin: 1rem 0 1.5rem;
+  }
+  .news-title em {
+    font-style: italic;
+    color: var(--color-gold);
+  }
+  .news-sub {
+    max-width: 34rem;
+    margin: 0 auto 2.25rem;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--color-muted);
+  }
+  .news-form {
+    max-width: 34rem;
+    margin: 0 auto;
+  }
+  .news-disclaimer {
+    margin-top: 1.25rem;
+    font-size: 0.8rem;
+    color: var(--color-muted-2);
+    letter-spacing: 0.02em;
+  }
+</style>

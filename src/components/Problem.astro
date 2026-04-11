@@ -1,0 +1,110 @@
+---
+import { site } from "../content/site";
+const { problem } = site;
+---
+
+<section class="problem border-t hairline" aria-labelledby="problem-title">
+  <div class="container-prose section-pad">
+    <header class="section-head fade-up">
+      <p class="eyebrow">{problem.eyebrow}</p>
+      <h2 id="problem-title" class="section-title">
+        {problem.title}<br />{problem.titleBreak}
+      </h2>
+    </header>
+
+    <ol class="problem-grid">
+      {problem.items.map((item) => (
+        <li class="problem-card fade-up">
+          <span class="problem-num">{item.num}</span>
+          <h3 class="problem-label">{item.label}</h3>
+          <p class="problem-text">{item.text}</p>
+        </li>
+      ))}
+    </ol>
+
+    <p class="problem-outcome fade-up">
+      <span class="problem-outcome__mark">→</span>
+      {problem.outcome}
+    </p>
+  </div>
+</section>
+
+<style>
+  .section-pad {
+    padding-block: clamp(4rem, 10vh, 7rem);
+  }
+  .section-head {
+    max-width: 42rem;
+    margin-bottom: 3.5rem;
+  }
+  .section-title {
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    margin-top: 0.85rem;
+  }
+
+  .problem-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--color-hairline);
+  }
+  .problem-card {
+    padding: 2.25rem 1.75rem 2.25rem 0;
+    border-bottom: 1px solid var(--color-hairline);
+    position: relative;
+  }
+  .problem-card + .problem-card {
+    padding-left: 1.75rem;
+    border-left: 1px solid var(--color-hairline);
+  }
+  .problem-num {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    color: var(--color-gold);
+    letter-spacing: 0.1em;
+  }
+  .problem-label {
+    font-family: var(--font-display);
+    font-size: 1.9rem;
+    font-weight: 800;
+    font-variation-settings: "opsz" 96, "SOFT" 25;
+    margin: 0.75rem 0 0.6rem;
+    color: var(--color-ink);
+    letter-spacing: -0.02em;
+  }
+  .problem-text {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--color-muted);
+  }
+
+  .problem-outcome {
+    margin-top: 3rem;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+    color: var(--color-ink-2);
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+  }
+  .problem-outcome__mark {
+    font-style: normal;
+    color: var(--color-gold);
+  }
+
+  @media (max-width: 840px) {
+    .problem-grid {
+      grid-template-columns: 1fr;
+    }
+    .problem-card + .problem-card {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .problem-card {
+      padding: 2rem 0;
+    }
+  }
+</style>

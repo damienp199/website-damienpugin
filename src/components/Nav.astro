@@ -1,0 +1,70 @@
+---
+import { site } from "../content/site";
+const { nav } = site;
+---
+
+<nav class="site-nav" aria-label="Navigation principale">
+  <div class="site-nav__inner">
+    <a href="#top" class="wordmark" aria-label={`${nav.brand.first} ${nav.brand.last} — accueil`}>
+      <span class="wordmark__first">{nav.brand.first}</span>
+      <span class="wordmark__dot">·</span>
+      <span class="wordmark__last">{nav.brand.last}</span>
+    </a>
+
+    <a href="#newsletter" class="nav-cta link-underline link-draw">
+      {nav.cta} <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</nav>
+
+<style>
+  .site-nav {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    right: 1rem;
+    z-index: 50;
+    pointer-events: none;
+  }
+  .site-nav__inner {
+    pointer-events: auto;
+    max-width: 68rem;
+    margin-inline: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.25rem;
+    background: color-mix(in oklab, var(--color-paper) 86%, transparent);
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    border: 1px solid var(--color-hairline);
+    border-radius: 999px;
+  }
+
+  .wordmark {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 800;
+    font-variation-settings: "opsz" 24;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    text-decoration: none;
+  }
+  .wordmark__dot {
+    color: var(--color-gold);
+    font-family: var(--font-sans);
+    transform: translateY(-1px);
+  }
+
+  .nav-cta {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+</style>

@@ -1,0 +1,57 @@
+---
+import { site } from "../content/site";
+const { podcast } = site;
+---
+
+<section id="podcast" class="podcast border-t hairline" aria-labelledby="podcast-title">
+  <div class="container-prose section-pad">
+    <header class="section-head fade-up">
+      <p class="eyebrow">{podcast.eyebrow}</p>
+      <h2 id="podcast-title" class="section-title">{podcast.title}</h2>
+      <p class="podcast-sub">{podcast.sub}</p>
+    </header>
+
+    <div class="podcast-frame fade-up">
+      <iframe
+        src={`https://player.captivate.fm/show/${podcast.captivateShowId}`}
+        title="Podcast Damien Pugin"
+        loading="lazy"
+        frameborder="0"
+        scrolling="no"
+        allow="clipboard-write"
+      ></iframe>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-pad { padding-block: clamp(4rem, 10vh, 7rem); }
+  .section-head {
+    max-width: 42rem;
+    margin-bottom: 2.75rem;
+  }
+  .section-title {
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
+    line-height: 1.05;
+    margin-top: 0.85rem;
+  }
+  .podcast-sub {
+    margin-top: 1rem;
+    font-size: 1.05rem;
+    color: var(--color-muted);
+    line-height: 1.6;
+  }
+
+  .podcast-frame {
+    background: white;
+    border: 1px solid var(--color-hairline);
+    padding: 0.35rem;
+    overflow: hidden;
+  }
+  .podcast-frame iframe {
+    display: block;
+    width: 100%;
+    height: 600px;
+    border: 0;
+  }
+</style>

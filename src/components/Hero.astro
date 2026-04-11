@@ -1,0 +1,87 @@
+---
+import EmailForm from "./EmailForm.astro";
+import { site } from "../content/site";
+const { hero, kit } = site;
+---
+
+<section id="top" class="hero">
+  <div class="container-prose hero__inner">
+    <p class="eyebrow fade-up">{hero.eyebrow}</p>
+
+    <h1 class="hero__title fade-up">
+      {hero.title}<br />
+      <em class="hero__accent">{hero.titleAccent}</em>
+    </h1>
+
+    <p class="hero__sub fade-up">{hero.sub}</p>
+
+    <div class="hero__form fade-up">
+      <EmailForm id="hero-form" cta={hero.cta} formId={kit.formId} />
+    </div>
+
+    <p class="hero__proof fade-up">
+      <span class="hero__proof-dot" aria-hidden="true"></span>
+      {hero.proof}
+    </p>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding: clamp(7rem, 14vh, 11rem) 0 clamp(4rem, 10vh, 7rem);
+  }
+  .hero__inner {
+    max-width: 56rem;
+    text-align: left;
+  }
+  .hero__title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 8.5vw, 6.75rem);
+    line-height: 0.94;
+    letter-spacing: -0.04em;
+    font-weight: 900;
+    font-variation-settings: "opsz" 144, "SOFT" 20;
+    margin-top: 1.25rem;
+    margin-bottom: 1.75rem;
+    color: var(--color-ink);
+  }
+  .hero__accent {
+    font-style: italic;
+    font-weight: 900;
+    font-variation-settings: "opsz" 144, "SOFT" 40;
+    color: var(--color-gold);
+  }
+  .hero__sub {
+    font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+    line-height: 1.6;
+    color: var(--color-muted);
+    max-width: 38rem;
+    margin-bottom: 2.25rem;
+  }
+  .hero__form {
+    max-width: 34rem;
+    margin-bottom: 1.75rem;
+  }
+  .hero__proof {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.875rem;
+    color: var(--color-muted);
+  }
+  .hero__proof-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-gold);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-gold) 20%, transparent);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.75; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero__proof-dot { animation: none; }
+  }
+</style>

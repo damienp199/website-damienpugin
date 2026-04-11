@@ -1,0 +1,172 @@
+---
+import { site } from "../content/site";
+const { testimonials } = site;
+const { featured, others } = testimonials;
+---
+
+<section id="temoignages" class="testimonials border-t hairline" aria-labelledby="testi-title">
+  <div class="container-prose section-pad">
+    <header class="section-head fade-up">
+      <p class="eyebrow">{testimonials.eyebrow}</p>
+      <h2 id="testi-title" class="section-title">
+        {testimonials.title}<br />{testimonials.titleBreak}
+      </h2>
+    </header>
+
+    <article class="featured fade-up">
+      <div class="featured__video">
+        <iframe
+          src={`https://www.youtube.com/embed/${featured.youtubeId}`}
+          title={`Témoignage ${featured.name}`}
+          loading="lazy"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+      <div class="featured__body">
+        <blockquote class="featured__quote">
+          <span class="featured__mark" aria-hidden="true">“</span>
+          {featured.quote}
+        </blockquote>
+        <footer class="featured__who">
+          <div class="featured__name">{featured.name}</div>
+          <div class="featured__title">{featured.title}</div>
+          <div class="featured__site">{featured.site}</div>
+        </footer>
+      </div>
+    </article>
+
+    <div class="others">
+      {others.map((t) => (
+        <article class="other fade-up">
+          <blockquote class="other__quote">{t.quote}</blockquote>
+          <footer class="other__who">
+            <div class="other__name">{t.name}</div>
+            <div class="other__title">{t.title}</div>
+            <div class="other__site">{t.site}</div>
+          </footer>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-pad { padding-block: clamp(4rem, 10vh, 7rem); }
+  .section-head {
+    max-width: 42rem;
+    margin-bottom: 3.5rem;
+  }
+  .section-title {
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    line-height: 1.05;
+    margin-top: 0.85rem;
+  }
+
+  .featured {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 3rem;
+    align-items: start;
+    padding-bottom: 4rem;
+    margin-bottom: 4rem;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+  .featured__body {
+    padding-top: 0.25rem;
+  }
+  .featured__video {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--color-surface);
+    border: 1px solid var(--color-hairline);
+    overflow: hidden;
+  }
+  .featured__video iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .featured__quote {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 1.6vw, 1.45rem);
+    line-height: 1.5;
+    font-style: italic;
+    color: var(--color-ink-2);
+    position: relative;
+    padding-left: 2rem;
+  }
+  .featured__mark {
+    position: absolute;
+    left: 0;
+    top: -0.75rem;
+    font-size: 3.25rem;
+    line-height: 1;
+    color: var(--color-gold);
+    font-style: normal;
+  }
+  .featured__who {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-hairline);
+  }
+  .featured__name {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 800;
+    font-variation-settings: "opsz" 24;
+  }
+  .featured__title, .featured__site {
+    font-size: 0.85rem;
+    color: var(--color-muted);
+  }
+  .featured__site {
+    margin-top: 0.15rem;
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+  }
+
+  .others {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem 3rem;
+  }
+  .other {
+    padding: 2rem 0 0;
+    border-top: 1px solid var(--color-hairline);
+  }
+  .other__quote {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.1rem;
+    line-height: 1.55;
+    color: var(--color-ink-2);
+  }
+  .other__who {
+    margin-top: 1.25rem;
+  }
+  .other__name {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 800;
+    font-variation-settings: "opsz" 24;
+  }
+  .other__title, .other__site {
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    line-height: 1.45;
+  }
+  .other__site {
+    margin-top: 0.15rem;
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 900px) {
+    .featured { grid-template-columns: 1fr; gap: 2rem; }
+    .others { grid-template-columns: 1fr; gap: 0; }
+  }
+</style>
