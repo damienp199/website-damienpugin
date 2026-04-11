@@ -8,9 +8,7 @@ const year = new Date().getFullYear();
   <div class="container-prose site-footer__inner">
     <div class="site-footer__brand">
       <span class="wordmark">
-        <span class="wordmark__first">{nav.brand.first}</span>
-        <span class="wordmark__dot">·</span>
-        <span class="wordmark__last">{nav.brand.last}</span>
+        <span class="wordmark__a">damien</span><span class="wordmark__b">pugin</span><span class="wordmark__br">]</span>
       </span>
       <p class="site-footer__copy">© {year} {footer.copyright}</p>
     </div>
@@ -41,17 +39,16 @@ const year = new Date().getFullYear();
     gap: 0.4rem;
   }
   .wordmark {
-    font-family: var(--font-display);
-    font-size: 1.05rem;
-    font-weight: 800;
-    font-variation-settings: "opsz" 24;
-    letter-spacing: -0.02em;
+    font-family: "Author", system-ui, sans-serif;
+    font-size: 1.3rem;
+    line-height: 1;
     color: var(--color-ink);
     display: inline-flex;
     align-items: baseline;
-    gap: 0.35rem;
   }
-  .wordmark__dot { color: var(--color-gold); }
+  .wordmark__a { font-weight: 300; letter-spacing: -0.005em; }
+  .wordmark__b { font-weight: 700; letter-spacing: -0.02em; }
+  .wordmark__br { color: var(--color-gold); font-weight: 500; margin-left: 0.04em; }
   .site-footer__copy {
     font-size: 0.8rem;
     color: var(--color-muted);

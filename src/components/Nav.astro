@@ -6,9 +6,7 @@ const { nav } = site;
 <nav class="site-nav" aria-label="Navigation principale">
   <div class="site-nav__inner">
     <a href="#top" class="wordmark" aria-label={`${nav.brand.first} ${nav.brand.last} — accueil`}>
-      <span class="wordmark__first">{nav.brand.first}</span>
-      <span class="wordmark__dot">·</span>
-      <span class="wordmark__last">{nav.brand.last}</span>
+      <span class="wordmark__a">damien</span><span class="wordmark__b">pugin</span><span class="wordmark__br">]</span>
     </a>
 
     <a href="#newsletter" class="nav-cta link-underline link-draw">
@@ -42,21 +40,26 @@ const { nav } = site;
   }
 
   .wordmark {
-    font-family: var(--font-display);
-    font-size: 1.1rem;
-    font-weight: 800;
-    font-variation-settings: "opsz" 24;
-    letter-spacing: -0.02em;
+    font-family: "Author", system-ui, sans-serif;
+    font-size: 1.35rem;
+    line-height: 1;
     color: var(--color-ink);
     display: inline-flex;
     align-items: baseline;
-    gap: 0.35rem;
     text-decoration: none;
   }
-  .wordmark__dot {
+  .wordmark__a {
+    font-weight: 300;
+    letter-spacing: -0.005em;
+  }
+  .wordmark__b {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .wordmark__br {
     color: var(--color-gold);
-    font-family: var(--font-sans);
-    transform: translateY(-1px);
+    font-weight: 500;
+    margin-left: 0.04em;
   }
 
   .nav-cta {

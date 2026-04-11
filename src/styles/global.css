@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-display: "Author", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Jost", ui-sans-serif, system-ui, sans-serif;
 
   --color-paper: #faf7f2;
@@ -35,20 +35,23 @@
     line-height: 1.65;
   }
 
+  /* Display headings — Author. Le sans n'a pas la masse du serif Fraunces,
+     on compense le thud factor avec : weight max 700, letter-spacing plus
+     serré, line-height écrasé, font-features kerning + alternates. */
   h1, h2, h3 {
     font-family: var(--font-display);
-    font-weight: 800;
+    font-weight: 700;
     font-optical-sizing: auto;
-    font-variation-settings: "opsz" 144, "SOFT" 30;
-    letter-spacing: -0.025em;
-    line-height: 0.98;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
     color: var(--color-ink);
+    font-feature-settings: "ss01", "kern", "calt";
   }
 
   h1 {
-    font-weight: 900;
-    font-variation-settings: "opsz" 144, "SOFT" 20;
-    letter-spacing: -0.035em;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 0.92;
   }
 
   ::selection {

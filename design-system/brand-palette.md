@@ -85,10 +85,63 @@ Exposé dans `src/styles/global.css` via `@theme` Tailwind v4 :
 
 ---
 
-## Typographie associée
+## Typographie
 
-- **Display** : Fraunces (variable) — H1 `900 / opsz 144 / SOFT 20`, H2/H3 `800 / opsz 96 / SOFT 30`
-- **Body** : Jost — `400-500`, `1.65` line-height, `17px` base
+### Display — Author (Indian Type Foundry / Fontshare)
+- **Source** : Fontshare (libre)
+- **CDN** : `https://api.fontshare.com/v2/css?f[]=author@200,300,400,500,600,700&display=swap`
+- **Poids utilisés** : 200-700 (max 700 — Author n'a pas de black)
+- **H1** : `font-weight: 700`, `letter-spacing: -0.05em`, `line-height: 0.92`
+- **H2/H3** : `font-weight: 700`, `letter-spacing: -0.04em`, `line-height: 0.95`
+- **Font-features** : `ss01`, `kern`, `calt` activées
+- **Usage** : titres, hero, headings, wordmark, accents éditoriaux
+- **Remplace** : Fraunces (utilisée en première itération — trop "essayiste classique" pour le positionnement Tech × Think)
+- **Why Author** : sans-serif premium contemporaine avec du caractère, équilibre Tech × Think sans tomber dans le SaaS générique (Inter/Geist/Manrope) ni l'éditorial pur. Pont visuel entre les deux pôles du positionnement.
+
+#### Compensation thud factor
+Le passage d'un serif heavy (Fraunces 900) à un sans (Author 700 max) fait perdre de la masse visuelle. Trois leviers de compensation :
+1. **Weight max** : toujours `700` sur les titres, jamais en dessous
+2. **Letter-spacing serré** : `-0.04em` à `-0.05em` (vs `-0.025em` Fraunces)
+3. **Line-height écrasé** : `0.92` à `0.95` (vs `0.98` Fraunces) pour densifier
+
+### Body — Jost
+- **Source** : Google Fonts (libre)
+- **Poids utilisés** : 300, 400, 500, 600, 700
+- **Body** : `font-weight: 400`, `line-height: 1.65`, `font-size: 17px` base
+- **Usage** : texte courant, paragraphes, UI secondaire, formulaires
+- **Note** : Jost reste pour le body car le contraste sans-display (Author) / sans-body (Jost) est subtil mais distinct — Jost a des proportions plus géométriques, Author plus humanistes. Si à terme on veut tout unifier sur Author, c'est faisable mais non requis.
+
+---
+
+## Logo / Wordmark
+
+**Construction** : `damienpugin]` — un seul mot, suivi d'un bracket fermant asymétrique en vermillon.
+
+### Specs typographiques exactes
+
+| Élément | Fonte | Poids | Letter-spacing | Couleur |
+|---|---|---|---|---|
+| `damien` | Author | `300` (light) | `-0.005em` | Ink `#0A0A0A` |
+| `pugin` | Author | `700` (bold) | `-0.02em` | Ink `#0A0A0A` |
+| `]` | Author | `500` (medium) | `0` | Vermilion `#F04E30` |
+
+- **Pas d'espace** entre `damien`, `pugin` et `]` (le bracket a un `margin-left: 0.04em`)
+- **Taille du bracket** : `1em` (même taille que le wordmark, pas surdimensionné)
+- **Inversion** : sur fond ink, le wordmark passe en `paper`, le bracket reste en `vermilion`
+
+### Pourquoi cette construction
+
+1. **Author light + bold** : le contraste de poids dans un seul mot incarne **Tech × Think** — deux forces opposées dans une seule forme.
+2. **Bracket asymétrique `]` seul** : pas de pendant gauche `[`. C'est l'asymétrie incarnée — référence directe à *Conversions Asymétriques™*. La marque *est* l'asymétrie, pas juste un nom encadré.
+3. **Vermillon localisé sur le bracket** : signal coloré ponctuel, identique au rôle du dot vermillon dans le brand system. Le bracket devient l'accent.
+4. **Mark autonome** : le `]` vermillon seul peut servir de favicon, watermark, end-card podcast, séparateur de section. C'est le signe distinctif réutilisable.
+
+### Règles d'usage
+
+- **Ne jamais** ajouter le bracket gauche `[` — ça casse l'asymétrie
+- **Ne jamais** séparer `damien` et `pugin` par un espace
+- **Toujours** garder le bracket en vermillon (sur tous les fonds)
+- **Tailles minimales** : 18px (email signature), 24px (footer mobile), 36px+ pour navbar standard
 
 ---
 
