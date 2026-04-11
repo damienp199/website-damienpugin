@@ -44,7 +44,7 @@ const { featured, others } = testimonials;
           <footer class="other__who">
             <div class="other__name">{t.name}</div>
             <div class="other__title">{t.title}</div>
-            <div class="other__site">{t.site}</div>
+            {t.site && <div class="other__site">{t.site}</div>}
           </footer>
         </article>
       ))}

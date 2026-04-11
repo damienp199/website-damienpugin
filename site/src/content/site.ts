@@ -82,7 +82,7 @@ export const site = {
     featured: {
       name: "Jean Rivière",
       title: "\"Papa\" du marketing sur le web francophone",
-      site: "RejoinsLeMouvement.com",
+      site: "jeanriviere.com",
       youtubeId: "h0OX2zlDv90",
       quote:
         "Damien m'a aidé à trouver des réponses que je cherchais depuis des années. Sa vision du métier de créateur est un vent d'air frais dans l'univers du marketing francophone. Damien est une encyclopédie vivante. Chez lui, c'est la bibliothèque d'Alexandrie du marketing. Si tu cherches une idée, il y a beaucoup de chances qu'il l'ait en stock quelque part…",
@@ -91,13 +91,13 @@ export const site = {
       {
         name: "Bastien Desveaux",
         title: "L'expert en YouTube Ads",
-        site: "TubeMastery.net",
+        site: "shivad.fr",
         quote: "Mon copywriter préféré ever ! C'est plus des mots, c'est de l'art. Je suis hypnotisé !",
       },
       {
         name: "Egon Liberge",
         title: "Copywriter pour titans du web",
-        site: "EgonLiberge.fr",
+        site: "",
         quote:
           "Après des années de galère, j'ai fait appel à Damien. Aujourd'hui j'ai quitté mon job de trimard en call center, j'ai mes premiers clients et je gagne ma vie en écrivant un mail par jour.",
       },
@@ -120,7 +120,6 @@ export const site = {
   },
 
   about: {
-    eyebrow: "À propos",
     title: "15 ans",
     titleLine2: "d'entrepreneuriat.",
     titleAccent: "Un système.",
