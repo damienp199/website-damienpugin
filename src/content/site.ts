@@ -52,7 +52,7 @@ export const site = {
     steps: [
       {
         num: "01",
-        title: "Méthode Magnétique",
+        title: "Système Signature",
         text: "Transforme ton expertise en méthode signature claire, scalable et différenciante.",
       },
       {

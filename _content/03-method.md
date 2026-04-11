@@ -8,7 +8,7 @@ Tu es expert dans ton domaine — pas dans le marketing. Ce système te laisse f
 
 ## Étapes
 
-### 01 — Méthode Magnétique
+### 01 — Système Signature
 Transforme ton expertise en méthode signature claire, scalable et différenciante.
 
 ### 02 — Orchestration de Contenus
