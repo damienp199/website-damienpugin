@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=author@500&display=block" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; height: 100vh; width: 100vw; background: transparent; }
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Author', system-ui, sans-serif;
+  }
+  .mark {
+    font-size: 90vmin;
+    line-height: 1;
+    color: #F04E30;
+    font-weight: 500;
+    /* nudge baseline so the bracket is optically centered in the square */
+    transform: translateY(7%);
+  }
+</style>
+</head>
+<body>
+  <span class="mark">]</span>
+</body>
+</html>
