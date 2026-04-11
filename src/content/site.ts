@@ -150,6 +150,7 @@ export const site = {
     copyright: "Damien Pugin. Tous droits réservés.",
     links: [
       { label: "Mentions légales", href: "/mentions-legales" },
+      { label: "CGV", href: "/cgv" },
       { label: "Confidentialité", href: "/politique-de-confidentialite" },
     ],
   },
