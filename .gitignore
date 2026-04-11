@@ -8,3 +8,4 @@ dist
 # Local tooling, not part of the project
 .claude/
 **/__pycache__/
+tmp/

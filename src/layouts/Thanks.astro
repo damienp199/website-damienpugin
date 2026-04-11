@@ -1,0 +1,92 @@
+---
+import Base from "./Base.astro";
+
+interface Props {
+  title: string;
+  eyebrow?: string;
+  heading: string;
+  accent?: string;
+}
+
+const { title, eyebrow, heading, accent } = Astro.props;
+---
+
+<Base title={title}>
+  <header class="container-narrow pt-10 pb-8">
+    <a href="/" class="eyebrow link-underline link-draw">← Damien Pugin</a>
+  </header>
+
+  <main class="container-narrow thanks">
+    {eyebrow && <p class="eyebrow mb-4 fade-up">{eyebrow}</p>}
+    <h1 class="thanks__title fade-up">
+      {heading}{accent && <> <em class="thanks__accent">{accent}</em></>}
+    </h1>
+
+    <div class="thanks__body fade-up">
+      <slot />
+    </div>
+  </main>
+
+  <footer class="border-t hairline">
+    <div class="container-narrow py-8 flex flex-wrap gap-4 items-center justify-between text-sm text-[color:var(--color-muted)]">
+      <span>© {new Date().getFullYear()} Damien Pugin.</span>
+      <a href="/" class="link-underline link-draw">Retour à l'accueil</a>
+    </div>
+  </footer>
+</Base>
+
+<style>
+  .thanks {
+    padding-top: clamp(3rem, 8vh, 6rem);
+    padding-bottom: clamp(5rem, 12vh, 9rem);
+    max-width: 44rem;
+  }
+  .thanks__title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6.5vw, 5rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    font-weight: 900;
+    font-variation-settings: "opsz" 144, "SOFT" 20;
+    margin-bottom: 2rem;
+    color: var(--color-ink);
+  }
+  .thanks__accent {
+    font-style: italic;
+    font-weight: 900;
+    font-variation-settings: "opsz" 144, "SOFT" 40;
+    color: var(--color-gold);
+  }
+  .thanks__body {
+    font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+    line-height: 1.7;
+    color: var(--color-ink-2, var(--color-muted));
+    max-width: 38rem;
+  }
+</style>
+
+<style is:global>
+  .thanks__body p { margin-bottom: 1.15rem; }
+  .thanks__body p:last-child { margin-bottom: 0; }
+  .thanks__body strong { color: var(--color-ink); }
+  .thanks__body a {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--color-hairline-2);
+  }
+  .thanks__body a:hover { text-decoration-color: var(--color-gold); }
+  .thanks__body ol {
+    list-style: decimal;
+    padding-left: 1.3rem;
+    margin: 0.5rem 0 1.25rem;
+  }
+  .thanks__body ol li { margin-bottom: 0.5rem; }
+  .thanks__signoff {
+    margin-top: 2rem;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--color-ink);
+  }
+</style>
