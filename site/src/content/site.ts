@@ -48,7 +48,7 @@ export const site = {
     title: "Conversions",
     titleAccent: "Asymétriques™",
     intro:
-      "Tu es expert dans ton domaine — pas dans le marketing. Ce système te laisse faire ce que tu fais de mieux, pendant que l'IA fait le reste.",
+      "Un système qui transforme ton expertise en flux continu de clients, sans appels de vente.",
     steps: [
       {
         num: "01",
