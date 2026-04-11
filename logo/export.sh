@@ -1,20 +1,22 @@
 #!/usr/bin/env bash
 # Export tous les PNG transparents du logo damienpugin] via Chrome headless.
+# Chaque asset (wordmark / mark / favicon) a son propre dossier qui contient :
+#   - source SVG
+#   - template HTML rendu par Chrome
+#   - exports/ pour les PNG générés
+#
 # Usage : ./logo/export.sh
 
 set -euo pipefail
 
 CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 DIR="$(cd "$(dirname "$0")" && pwd)"
-TPL="$DIR/templates"
-OUT="$DIR/exports"
-
-mkdir -p "$OUT"
-rm -f "$OUT"/*.png
 
 shoot () {
-  local file="$1" w="$2" h="$3" out="$4"
-  echo "  $out  (${w}×${h})"
+  # shoot <template-path> <width> <height> <output-path>
+  local tpl="$1" w="$2" h="$3" out="$4"
+  echo "  $(basename "$out")  (${w}×${h})"
+  mkdir -p "$(dirname "$out")"
   "$CHROME" \
     --headless=new \
     --disable-gpu \
@@ -24,41 +26,37 @@ shoot () {
     --force-device-scale-factor=1 \
     --virtual-time-budget=6000 \
     --window-size="${w},${h}" \
-    --screenshot="$OUT/$out" \
-    "file://$TPL/$file" \
+    --screenshot="$out" \
+    "file://$tpl" \
     > /dev/null 2>&1
 }
 
-echo
-echo "▸ Wordmark complet — ink (transparent)"
-shoot wordmark-trans-ink.html 1200 300 wordmark-ink-1200.png
-shoot wordmark-trans-ink.html 2400 600 wordmark-ink-2400.png
-shoot wordmark-trans-ink.html 4800 1200 wordmark-ink-4800.png
+# Reset all exports
+rm -f "$DIR"/wordmark/exports/*.png "$DIR"/favicon/exports/*.png
 
 echo
-echo "▸ Wordmark complet — paper (transparent, pour fond sombre)"
-shoot wordmark-trans-paper.html 1200 300 wordmark-paper-1200.png
-shoot wordmark-trans-paper.html 2400 600 wordmark-paper-2400.png
-shoot wordmark-trans-paper.html 4800 1200 wordmark-paper-4800.png
+echo "▸ Wordmark — sur fond clair (texte ink)"
+shoot "$DIR/wordmark/template-on-light.html" 1200 300  "$DIR/wordmark/exports/on-light-1200.png"
+shoot "$DIR/wordmark/template-on-light.html" 2400 600  "$DIR/wordmark/exports/on-light-2400.png"
+shoot "$DIR/wordmark/template-on-light.html" 4800 1200 "$DIR/wordmark/exports/on-light-4800.png"
 
 echo
-echo "▸ Mark seul — ] vermillon (transparent)"
-shoot mark-trans.html 64 64 mark-64.png
-shoot mark-trans.html 128 128 mark-128.png
-shoot mark-trans.html 256 256 mark-256.png
-shoot mark-trans.html 512 512 mark-512.png
-shoot mark-trans.html 1024 1024 mark-1024.png
+echo "▸ Wordmark — sur fond sombre (texte paper)"
+shoot "$DIR/wordmark/template-on-dark.html" 1200 300  "$DIR/wordmark/exports/on-dark-1200.png"
+shoot "$DIR/wordmark/template-on-dark.html" 2400 600  "$DIR/wordmark/exports/on-dark-2400.png"
+shoot "$DIR/wordmark/template-on-dark.html" 4800 1200 "$DIR/wordmark/exports/on-dark-4800.png"
 
 echo
-echo "▸ Favicon · dp] mini wordmark (validé)"
-shoot favicon-dp-mini.html 16 16 favicon-16.png
-shoot favicon-dp-mini.html 32 32 favicon-32.png
-shoot favicon-dp-mini.html 64 64 favicon-64.png
-shoot favicon-dp-mini.html 128 128 favicon-128.png
-shoot favicon-dp-mini.html 192 192 favicon-192.png
-shoot favicon-dp-mini.html 256 256 favicon-256.png
-shoot favicon-dp-mini.html 512 512 favicon-512.png
+echo "▸ Favicon — dp] mini wordmark"
+shoot "$DIR/favicon/template.html" 16  16  "$DIR/favicon/exports/16.png"
+shoot "$DIR/favicon/template.html" 32  32  "$DIR/favicon/exports/32.png"
+shoot "$DIR/favicon/template.html" 64  64  "$DIR/favicon/exports/64.png"
+shoot "$DIR/favicon/template.html" 128 128 "$DIR/favicon/exports/128.png"
+shoot "$DIR/favicon/template.html" 192 192 "$DIR/favicon/exports/192.png"
+shoot "$DIR/favicon/template.html" 256 256 "$DIR/favicon/exports/256.png"
+shoot "$DIR/favicon/template.html" 512 512 "$DIR/favicon/exports/512.png"
 
 echo
 echo "Terminé."
-ls -lh "$OUT"/*.png | awk '{printf "  %-44s  %s\n", $9, $5}'
+find "$DIR"/{wordmark,favicon}/exports -name '*.png' | sort | \
+  awk -v base="$DIR/" '{ sub(base, "", $0); printf "  %s\n", $0 }'
