@@ -71,7 +71,7 @@ export const site = {
   podcast: {
     eyebrow: "Le podcast",
     title: "Le Podcast.",
-    sub: "Des stratégies concrètes pour construire un système d'acquisition qui tourne sans toi.",
+    sub: "Je documente mes systèmes, stratégies et réflexions en live.",
     captivateShowId: "69358d2b-59c1-4481-b4d8-b42082d1e4af",
   },
 
