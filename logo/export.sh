@@ -47,14 +47,24 @@ shoot "$DIR/wordmark/template-on-dark.html" 2400 600  "$DIR/wordmark/exports/on-
 shoot "$DIR/wordmark/template-on-dark.html" 4800 1200 "$DIR/wordmark/exports/on-dark-4800.png"
 
 echo
-echo "▸ Favicon — dp] mini wordmark"
-shoot "$DIR/favicon/template.html" 16  16  "$DIR/favicon/exports/16.png"
-shoot "$DIR/favicon/template.html" 32  32  "$DIR/favicon/exports/32.png"
-shoot "$DIR/favicon/template.html" 64  64  "$DIR/favicon/exports/64.png"
-shoot "$DIR/favicon/template.html" 128 128 "$DIR/favicon/exports/128.png"
-shoot "$DIR/favicon/template.html" 192 192 "$DIR/favicon/exports/192.png"
-shoot "$DIR/favicon/template.html" 256 256 "$DIR/favicon/exports/256.png"
-shoot "$DIR/favicon/template.html" 512 512 "$DIR/favicon/exports/512.png"
+echo "▸ Favicon — dp] mini wordmark · light (texte ink)"
+shoot "$DIR/favicon/template.html" 16  16  "$DIR/favicon/exports/light-16.png"
+shoot "$DIR/favicon/template.html" 32  32  "$DIR/favicon/exports/light-32.png"
+shoot "$DIR/favicon/template.html" 64  64  "$DIR/favicon/exports/light-64.png"
+shoot "$DIR/favicon/template.html" 128 128 "$DIR/favicon/exports/light-128.png"
+shoot "$DIR/favicon/template.html" 192 192 "$DIR/favicon/exports/light-192.png"
+shoot "$DIR/favicon/template.html" 256 256 "$DIR/favicon/exports/light-256.png"
+shoot "$DIR/favicon/template.html" 512 512 "$DIR/favicon/exports/light-512.png"
+
+echo
+echo "▸ Favicon — dp] mini wordmark · dark (texte paper, pour mode sombre)"
+shoot "$DIR/favicon/template-dark.html" 16  16  "$DIR/favicon/exports/dark-16.png"
+shoot "$DIR/favicon/template-dark.html" 32  32  "$DIR/favicon/exports/dark-32.png"
+shoot "$DIR/favicon/template-dark.html" 64  64  "$DIR/favicon/exports/dark-64.png"
+shoot "$DIR/favicon/template-dark.html" 128 128 "$DIR/favicon/exports/dark-128.png"
+shoot "$DIR/favicon/template-dark.html" 192 192 "$DIR/favicon/exports/dark-192.png"
+shoot "$DIR/favicon/template-dark.html" 256 256 "$DIR/favicon/exports/dark-256.png"
+shoot "$DIR/favicon/template-dark.html" 512 512 "$DIR/favicon/exports/dark-512.png"
 
 echo
 echo "Terminé."
