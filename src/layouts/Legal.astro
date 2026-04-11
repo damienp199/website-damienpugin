@@ -1,5 +1,7 @@
 ---
 import Base from "./Base.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
 
 interface Props {
   title: string;
@@ -11,12 +13,10 @@ const { title, heading, updated } = Astro.props;
 ---
 
 <Base title={title}>
-  <header class="container-narrow pt-10 pb-8">
-    <a href="/" class="eyebrow link-underline link-draw">← Damien Pugin</a>
-  </header>
+  <Nav />
 
-  <main class="container-narrow pb-24">
-    <h1 class="text-4xl md:text-5xl mb-3">{heading}</h1>
+  <main class="container-narrow legal-main">
+    <h1 class="legal-title">{heading}</h1>
     {updated && <p class="eyebrow mb-10">Mise à jour · {updated}</p>}
 
     <article class="prose-legal text-[16px] leading-[1.75] text-[color:var(--color-ink-2)]">
@@ -24,13 +24,19 @@ const { title, heading, updated } = Astro.props;
     </article>
   </main>
 
-  <footer class="border-t hairline">
-    <div class="container-narrow py-8 flex flex-wrap gap-4 items-center justify-between text-sm text-[color:var(--color-muted)]">
-      <span>© {new Date().getFullYear()} Damien Pugin.</span>
-      <a href="/" class="link-underline link-draw">Retour à l'accueil</a>
-    </div>
-  </footer>
+  <Footer />
 </Base>
+
+<style>
+  .legal-main {
+    padding-top: clamp(7rem, 14vh, 10rem);
+    padding-bottom: clamp(5rem, 10vh, 7rem);
+  }
+  .legal-title {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    margin-bottom: 0.75rem;
+  }
+</style>
 
 <style is:global>
   .prose-legal h2 {
