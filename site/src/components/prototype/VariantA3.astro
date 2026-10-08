@@ -5,42 +5,64 @@
 import Icon from "./Icon.astro";
 import PdForm from "./PdForm.astro";
 import Wordmark from "./Wordmark.astro";
+import Saw from "./Saw.astro";
 import { site } from "../../content/site";
 import { proto } from "../../content/prototype";
+// problem : "statement" = titre affirmatif + résultat sous le schéma ; "question" = « Des revenus en ⩘ ? » à gauche, rien dessous
+// nodes : rendu des domaines du schéma. pill = pastille noire ; picto = rond noir + picto + nom dessous ;
+// outline = pastille blanche à contour sienna ; label = nom seul sur halo, point sienna.
+interface Props { problemStyle?: "statement" | "question"; nodes?: "pill" | "picto" | "outline" | "label"; uid?: string }
+const { problemStyle = "statement", nodes = "pill", uid = "a3" } = Astro.props;
+// Pictos Lucide (grille 24) : aimant, colis, liste
+const icons = [
+  ["m6 15-4-4 6.75-6.77a7.79 7.79 0 0 1 11 11L13 22l-4-4 6.39-6.36a2.14 2.14 0 0 0-3-3L6 15", "m5 8 4 4", "m12 15 4 4"],
+  ["M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z", "M12 22V12", "m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7", "m7.5 4.27 9 5.15"],
+  ["M8 2h8v4H8z", "M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2", "M12 11h4", "M12 16h4", "M8 11h.01", "M8 16h.01"],
+];
 const { nav, podcast, testimonials, newsletter: nl, footer } = site;
 const { hero, outcomes, problem, method, statement, quotes, about, newsletter } = proto;
 const [featured, ...others] = quotes;
 // Schéma problème : trois fronts reliés à toi
-const pos = [{ x: 110, y: 64 }, { x: 450, y: 64 }, { x: 280, y: 296 }];
+// Triangle équilatéral centré sur toi : pastilles à égale distance de toi et entre elles
+const C = { x: 280, y: 180 }, R = 155;
+const pos = [-150, -30, 90].map((deg) => ({ x: C.x + R * Math.cos((deg * Math.PI) / 180), y: C.y + R * Math.sin((deg * Math.PI) / 180) }));
 const fronts = problem.fronts.map((label, i) => ({ label, ...pos[i] }));
-const C = { x: 280, y: 172 };
-// Jonglage : gribouillis fixes entre chaque paire d'éléments. Aléatoire à graine fixe : le dessin ne change pas.
-let seed = 7;
+// Jonglage : câbles lisses (spline Catmull-Rom, sans angle) qui partent de toi, font le tour d'une pastille et reviennent,
+// plus quelques câbles entre domaines. Aléatoire à graine fixe : le dessin ne change pas.
+let seed = 11;
 const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
 const r = (a: number, b: number) => a + rnd() * (b - a);
-const nodes = [C, ...fronts];
-const ties: { d: string; w: number; o: number }[] = [];
-for (let i = 0; i < nodes.length; i++)
-  for (let j = 0; j < nodes.length; j++) {
-    if (i === j) continue;
-    const a = nodes[i], b = nodes[j];
-    for (let n = 0; n < 3; n++) {
-      // 1 à 3 points de passage qui débordent largement, poignées exagérées → boucles et croisements
-      const steps = 1 + Math.floor(rnd() * 3);
-      const pts = [a];
-      for (let k = 1; k <= steps; k++) {
-        const t = k / (steps + 1);
-        pts.push({ x: a.x + (b.x - a.x) * t + r(-90, 90), y: a.y + (b.y - a.y) * t + r(-70, 70) });
-      }
-      pts.push(b);
-      let d = `M${a.x} ${a.y}`;
-      for (let k = 1; k < pts.length; k++) {
-        const p0 = pts[k - 1], p1 = pts[k];
-        d += ` C${(p0.x + r(-105, 105)).toFixed(0)} ${(p0.y + r(-85, 85)).toFixed(0)} ${(p1.x + r(-105, 105)).toFixed(0)} ${(p1.y + r(-85, 85)).toFixed(0)} ${p1.x.toFixed(0)} ${p1.y.toFixed(0)}`;
-      }
-      ties.push({ d, w: r(0.6, 2.2), o: r(0.35, 0.9) });
-    }
+type P = { x: number; y: number };
+const spline = (pts: P[]) => {
+  let d = `M${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] ?? pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] ?? p2;
+    const c1 = { x: p1.x + (p2.x - p0.x) / 4.5, y: p1.y + (p2.y - p0.y) / 4.5 };
+    const c2 = { x: p2.x - (p3.x - p1.x) / 4.5, y: p2.y - (p3.y - p1.y) / 4.5 };
+    d += ` C${c1.x.toFixed(1)} ${c1.y.toFixed(1)} ${c2.x.toFixed(1)} ${c2.y.toFixed(1)} ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
   }
+  return d;
+};
+// Câbles toi ↔ pastille (jamais pastille ↔ pastille) : chaque câble part de toi, boucle autour du centre
+// avec des rayons variés, puis rejoint sa pastille. Spline lisse, épaisseur constante.
+const O = C, RX = 290, RY = 215;
+const ties: string[] = [];
+fronts.forEach((f) => {
+  for (let n = 0; n < 7; n++) {
+    let t = r(0, Math.PI * 2);
+    const dir = n % 2 ? 1 : -1;
+    const pts: P[] = [C];
+    const loops = 2 + Math.floor(rnd() * 3);
+    for (let k = 0; k < loops; k++) {
+      t += dir * r(1.2, 1.7);
+      const rad = k === 0 ? r(0.15, 0.3) : r(0.3, 1);
+      const sq = r(0.8, 1.2);
+      pts.push({ x: O.x + Math.cos(t) * RX * rad * sq, y: O.y + Math.sin(t) * RY * rad / sq });
+    }
+    pts.push(f);
+    ties.push(spline(pts));
+  }
+});
 ---
 
 <div class="a3">
@@ -67,7 +89,7 @@ for (let i = 0; i < nodes.length; i++)
         <div class="a3-hero-foot">
           <p class="a3-lede">{hero.sub}</p>
           <div class="a3-hero-form">
-            <PdForm id="a3-hero-email" cta={hero.cta} placeholder={nl.placeholder} />
+            <PdForm id={`${uid}-hero-email`} cta={hero.cta} placeholder={nl.placeholder} />
             <p class="a3-proof"><span class="a3-live"></span>{hero.proof}</p>
           </div>
         </div>
@@ -102,23 +124,43 @@ for (let i = 0; i < nodes.length; i++)
     </section>
 
     <section class="a3-sec a3-wrap" id="probleme">
-      <h2 class="a3-h2">{problem.title}</h2>
+      {problemStyle === "question" ? (
+        <div class="a3-stick">
+          <h2 class="a3-h2 a3-h2-q">{problem.titleAlt.replace(/ \S+$/, "")} <span class="a3-nowrap">{problem.titleAlt.split(" ").at(-1)} <Saw />&#8239;?</span></h2>
+          <p class="a3-q-sub">{problem.titleAltSub}</p>
+        </div>
+      ) : (
+        <h2 class="a3-h2">{problem.title}</h2>
+      )}
       <div class="a3-body">
-        <svg class="a3-fronts" viewBox="0 0 560 340" role="img" aria-label={`Tu jongles entre ${problem.fronts.join(", ").toLowerCase()} : tout passe par toi.`}>
-          {ties.map((t) => <path class="a3-tie" d={t.d} style={`stroke-width:${t.w.toFixed(2)};opacity:${t.o.toFixed(2)}`} />)}
-          {fronts.map((f) => (
-            <g class="a3-front">
-              <rect x={f.x - 82} y={f.y - 24} width="164" height="48" rx="24" />
-              <text x={f.x} y={f.y} text-anchor="middle" dominant-baseline="central">{f.label}</text>
-            </g>
+        <svg class="a3-fronts" viewBox="-40 -50 640 440" role="img" aria-label={`Tu jongles entre ${problem.fronts.join(", ").toLowerCase()} : tout passe par toi.`}>
+          {ties.map((d) => <path class="a3-tie" d={d} />)}
+          {fronts.map((f, i) => (
+            nodes === "picto" ? (
+              <g class="a3-dom">
+                <circle cx={f.x} cy={f.y} r="30" />
+                <g transform={`translate(${f.x - 14} ${f.y - 14}) scale(1.1667)`}>{icons[i].map((d) => <path d={d} />)}</g>
+                <text x={f.x} y={f.y + (f.y > C.y ? 52 : -52)} text-anchor="middle" dominant-baseline="central">{f.label}</text>
+              </g>
+            ) : nodes === "label" ? (
+              <g class="a3-lab">
+                <circle cx={f.x} cy={f.y} r="6" />
+                <text x={f.x} y={f.y + (f.y > C.y ? 28 : -26)} text-anchor="middle" dominant-baseline="central">{f.label}</text>
+              </g>
+            ) : (
+              <g class:list={["a3-front", { "is-outline": nodes === "outline" }]}>
+                <rect x={f.x - 76} y={f.y - 22} width="152" height="44" rx="22" />
+                <text x={f.x} y={f.y} text-anchor="middle" dominant-baseline="central">{f.label}</text>
+              </g>
+            )
           ))}
           <circle class="a3-you" cx={C.x} cy={C.y} r="46" />
           <text class="a3-you-t" x={C.x} y={C.y} text-anchor="middle" dominant-baseline="central">{problem.center}</text>
         </svg>
-        <div class="a3-outcome">
+        {problemStyle === "statement" && <div class="a3-outcome">
           <span class="a3-outcome-k">{problem.outcomeLabel}</span>
-          <p>{problem.outcome} <svg class="a3-saw" viewBox="0 0 140 32" role="img" aria-label={problem.outcomeAlt}><path d="M2 24 L16 8 L24 20 L40 4 L50 28 L64 12 L72 22 L88 2 L98 26 L114 10 L122 20 L134 6" /><circle cx="134" cy="6" r="3.5" /></svg></p>
-        </div>
+          <p>{problem.outcome} <Saw /></p>
+        </div>}
       </div>
     </section>
 
@@ -192,7 +234,7 @@ for (let i = 0; i < nodes.length; i++)
         <div class="a3-hero-foot">
           <p class="a3-lede">{newsletter.sub}</p>
           <div class="a3-hero-form">
-            <PdForm id="a3-nl-email" cta={nl.cta} placeholder={nl.placeholder} />
+            <PdForm id={`${uid}-nl-email`} cta={nl.cta} placeholder={nl.placeholder} />
             <p class="caption muted">{nl.disclaimer}</p>
           </div>
         </div>
@@ -244,13 +286,22 @@ for (let i = 0; i < nodes.length; i++)
 
   /* Problème : tout passe par toi */
   .a3-fronts { display: block; width: 100%; height: auto; overflow: visible; }
-  .a3-tie { fill: none; stroke: var(--hot); stroke-linecap: round; }
-  .a3-front rect { fill: var(--bg); stroke: var(--border); stroke-width: 1.5; }
-  .a3-front text { font: 600 19px var(--font-sans); fill: var(--text); }
-  .a3-you { fill: var(--text); }
+  .a3-tie { fill: none; stroke: var(--hot); stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+  .a3-front rect { fill: var(--text); stroke: var(--bg); stroke-width: 5; paint-order: stroke; }
+  .a3-front text { font: 600 17px var(--font-sans); fill: var(--bg); letter-spacing: -0.01em; }
+  .a3-front.is-outline rect { fill: var(--bg); stroke: var(--accent); stroke-width: 2.5; paint-order: normal; }
+  .a3-front.is-outline text { fill: var(--accent); font-weight: 650; }
+  :root:not([data-theme="dark"]) .a3-front.is-outline text { fill: color-mix(in srgb, var(--accent) 82%, black); }
+  .a3-dom circle { fill: var(--text); stroke: var(--bg); stroke-width: 5; paint-order: stroke; }
+  .a3-dom path { fill: none; stroke: var(--bg); stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+  .a3-dom text, .a3-lab text { font: 650 17px var(--font-sans); fill: var(--text); letter-spacing: -0.01em; stroke: var(--bg); stroke-width: 8; stroke-linejoin: round; paint-order: stroke; }
+  .a3-lab text { font-size: 20px; }
+  .a3-lab circle { fill: var(--accent); stroke: var(--bg); stroke-width: 3; paint-order: stroke; }
+  .a3-you { fill: var(--text); stroke: var(--bg); stroke-width: 5; paint-order: stroke; }
   .a3-you-t { font: 700 22px var(--font-sans); fill: var(--bg); letter-spacing: -0.02em; }
-  .a3-saw { display: inline-block; width: 3.4em; height: 0.8em; vertical-align: -0.05em; margin-left: 0.2em; fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; overflow: visible; }
-  .a3-saw circle { fill: var(--accent); stroke: none; }
+  .a3-nowrap { white-space: nowrap; }
+  .a3-q-sub { margin-top: 40px; font-size: clamp(22px, 2.2vw, 28px); line-height: 1.3; letter-spacing: -0.015em; color: var(--text-muted); max-width: 16em; text-wrap: balance; }
+  .a3-h2-q :global(.a3-saw) { stroke-width: 4; width: 2.6em; vertical-align: 0; }
   .a3-outcome { display: flex; align-items: baseline; gap: var(--space-24); margin-top: 64px; padding-top: var(--space-24); border-top: 1px solid var(--border); }
   .a3-outcome-k { font-size: 14px; color: var(--text-muted); min-width: 5.5em; }
   .a3-outcome p { font-size: clamp(22px, 2.2vw, 28px); font-weight: 500; letter-spacing: -0.015em; line-height: 1.2; }

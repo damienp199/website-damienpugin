@@ -1,13 +1,20 @@
 ---
 // PROTOTYPE JETABLE — redesign du site avec le design system Paradigm.
 // Variante retenue : A3R3 (grand format, hero sienna), copy offre Expert Asymétrique.
+// A3R3B : même page, titre problème « Des revenus en ⩘ ».
 import "../styles/prototype/tokens.css";
 import "../styles/prototype/bundle.css";
 import VariantA3 from "../components/prototype/VariantA3.astro";
 import Switcher from "../components/prototype/Switcher.astro";
 import { site } from "../content/site";
 
-const variants = [{ key: "A3R3", name: "Hero sienna" }];
+const variants = [
+  { key: "A3R3", name: "Prison dorée" },
+  { key: "A3R3B", name: "Dents de scie, pastilles" },
+  { key: "A3R3P", name: "Dents de scie, pictos" },
+  { key: "A3R3O", name: "Dents de scie, contour" },
+  { key: "A3R3L", name: "Dents de scie, texte seul" },
+];
 ---
 
 <!doctype html>
@@ -28,6 +35,10 @@ const variants = [{ key: "A3R3", name: "Hero sienna" }];
   </head>
   <body>
     <div data-variant="A3R3"><VariantA3 /></div>
+    <div data-variant="A3R3B" hidden><VariantA3 problemStyle="question" uid="a3b" /></div>
+    <div data-variant="A3R3P" hidden><VariantA3 problemStyle="question" nodes="picto" uid="a3p" /></div>
+    <div data-variant="A3R3O" hidden><VariantA3 problemStyle="question" nodes="outline" uid="a3o" /></div>
+    <div data-variant="A3R3L" hidden><VariantA3 problemStyle="question" nodes="label" uid="a3l" /></div>
     <Switcher variants={variants} />
 
     <script>

@@ -21,6 +21,9 @@ export const proto = {
 
   problem: {
     title: "Tu as construit une prison dorée.",
+    // Variante B : « Des revenus en ⩘ » seul à gauche, rien sous le schéma
+    titleAlt: "Des revenus en",
+    titleAltSub: "Ton business ressemble peut-être à ça…",
     center: "Toi",
     fronts: ["Acquisition", "Livraison", "Obligations"],
     // Suivi d'un petit SVG en dents de scie
