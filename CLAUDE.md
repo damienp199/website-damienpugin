@@ -63,3 +63,10 @@ npm run dev      # astro dev
 npm run build    # astro build
 npm run preview  # astro preview
 ```
+
+## En cours : refonte design (branche `prototype/paradigm-redesign`)
+
+- Prototype sur `/prototype` (`components/prototype/VariantA3.astro`, copy dans `content/prototype.ts`), design system Paradigm, offre **Expert Asymétrique** (Drive `102-expert-asymetrique/OFFRE.md` + `SALES.md`).
+- Direction retenue : A3R3 (grand format, hero + newsletter sienna). Section problème : choisir entre les variantes du sélecteur (A3R3, B, P, O, L).
+- Reste à faire : Damien finalise l'offre et les mots → mettre à jour `prototype.ts` → passer tout le site sous ce design (pages légales et thanks incluses) → publier.
+- Ne pas toucher `site.ts` (site en ligne, encore « Conversions Asymétriques™ ») avant la bascule.
