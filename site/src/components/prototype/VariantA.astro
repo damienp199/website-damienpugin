@@ -1,0 +1,182 @@
+---
+// Variante A — « Document » : une seule colonne de lecture (content-width 700px), barre en haut, sections séparées par un trait.
+import Icon from "./Icon.astro";
+import PdForm from "./PdForm.astro";
+import { site } from "../../content/site";
+const { nav, hero, problem, method, podcast, testimonials, about, newsletter, footer } = site;
+const inline = (s: string) => s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+---
+
+<div class="va">
+  <header class="va-bar">
+    <div class="va-bar-in">
+      <a href="#top" class="quiet va-name">{nav.brand.first} {nav.brand.last}</a>
+      <nav class="va-nav" aria-label="Sections">
+        <a class="quiet muted" href="#methode">Méthode</a>
+        <a class="quiet muted" href="#podcast">Podcast</a>
+        <a class="quiet muted" href="#temoignages">Témoignages</a>
+        <a class="quiet muted" href="#about">À propos</a>
+      </nav>
+      <div class="va-bar-actions">
+        <button class="pd-button mod-icon theme-toggle" data-theme-toggle aria-label="Changer de thème">
+          <Icon name="sun" class="ico-sun" /><Icon name="moon" class="ico-moon" />
+        </button>
+        <a href="#newsletter" class="pd-button">{nav.cta}</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="va-col" id="top">
+    <section class="va-sec va-hero">
+      <p class="caption muted">{hero.eyebrow}</p>
+      <h1 class="title">{hero.title} <span class="brand">{hero.titleAccent}</span></h1>
+      <p class="body muted">{hero.sub}</p>
+      <PdForm id="va-hero-email" cta={hero.cta} placeholder={newsletter.placeholder} />
+      <p class="caption muted va-proof"><Icon name="radio" size={14} /> {hero.proof}</p>
+    </section>
+
+    <section class="va-sec" id="probleme">
+      <p class="caption muted">{problem.eyebrow}</p>
+      <h2 class="heading">{problem.title} {problem.titleBreak}</h2>
+      <ul class="va-fronts">
+        {problem.items.map((it) => (
+          <li>
+            <span class="va-front-label">{it.label}</span>
+            <span class="muted">{it.text}</span>
+          </li>
+        ))}
+      </ul>
+      <div class="pd-callout mod-warning">
+        <div class="pd-callout-title"><Icon name="triangle-alert" /> Résultat</div>
+        <div class="pd-callout-body"><p>{problem.outcome}</p></div>
+      </div>
+    </section>
+
+    <section class="va-sec" id="methode">
+      <p class="caption muted">{method.eyebrow}</p>
+      <h2 class="heading">{method.title} <span class="brand">{method.titleAccent}</span></h2>
+      <p class="body muted">{method.intro}</p>
+      <ol class="va-steps">
+        {method.steps.map((s) => (
+          <li>
+            <span class="faint code">{s.num}</span>
+            <div>
+              <div class="va-step-title">{s.title}</div>
+              <p class="muted">{s.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="va-sec" id="podcast">
+      <p class="caption muted">{podcast.eyebrow}</p>
+      <h2 class="heading">{podcast.title}</h2>
+      <p class="body muted">{podcast.sub}</p>
+      <div class="va-frame">
+        <iframe src={`https://player.captivate.fm/show/${podcast.captivateShowId}`} title="Podcast Damien Pugin" loading="lazy" scrolling="no" allow="clipboard-write"></iframe>
+      </div>
+    </section>
+
+    <section class="va-sec" id="temoignages">
+      <p class="caption muted">{testimonials.eyebrow}</p>
+      <h2 class="heading">{testimonials.title} {testimonials.titleBreak}</h2>
+      <figure class="va-featured">
+        <div class="va-video">
+          <iframe src={`https://www.youtube.com/embed/${testimonials.featured.youtubeId}`} title={`Témoignage ${testimonials.featured.name}`} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <blockquote class="pd-quote">{testimonials.featured.quote}</blockquote>
+        <figcaption>
+          <span class="va-who">{testimonials.featured.name}</span>
+          <span class="caption muted">{testimonials.featured.title} · {testimonials.featured.site}</span>
+        </figcaption>
+      </figure>
+      <ul class="va-others">
+        {testimonials.others.map((t) => (
+          <li>
+            <blockquote class="pd-quote">{t.quote}</blockquote>
+            <div class="va-who">{t.name}</div>
+            <div class="caption muted">{t.title}{t.site && ` · ${t.site}`}</div>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="va-sec" id="about">
+      <h2 class="heading">{about.title} {about.titleLine2} <span class="brand">{about.titleAccent}</span></h2>
+      <div class="va-prose body">
+        {about.paragraphs.map((p) => <p set:html={inline(p)} />)}
+        <p><a href="#newsletter" class="link">{about.outro.linkText}</a> {about.outro.suffix}</p>
+      </div>
+    </section>
+
+    <section class="va-sec" id="newsletter">
+      <div class="va-panel">
+        <p class="caption muted">{newsletter.eyebrow}</p>
+        <h2 class="heading">{newsletter.title} <span class="brand">{newsletter.titleAccent}</span></h2>
+        <p class="muted">{newsletter.sub}</p>
+        <PdForm id="va-nl-email" cta={newsletter.cta} placeholder={newsletter.placeholder} />
+        <p class="caption muted">{newsletter.disclaimer}</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="va-footer caption muted">
+    <span>© {new Date().getFullYear()} {footer.copyright}</span>
+    <nav class="va-footer-links">
+      {footer.links.map((l) => <a class="quiet" href={l.href}>{l.label}</a>)}
+    </nav>
+  </footer>
+</div>
+
+<style>
+  .va-bar { position: sticky; top: 0; z-index: 10; background: var(--bg-bar); border-bottom: 1px solid var(--border); }
+  .va-bar-in { max-width: var(--content-width); margin-inline: auto; padding: var(--space-8) var(--space-32); display: flex; align-items: center; gap: var(--space-16); min-height: 44px; }
+  .va-name { font-weight: 600; }
+  .va-nav { display: flex; gap: var(--space-16); margin-left: var(--space-8); }
+  .va-bar-actions { margin-left: auto; display: flex; align-items: center; gap: var(--space-8); }
+  .va-bar-actions .pd-button:not(.mod-icon) { text-decoration: none; }
+
+  .va-col { max-width: var(--content-width); margin-inline: auto; padding-inline: var(--space-32); }
+  .va-sec { display: flex; flex-direction: column; gap: var(--space-16); padding-block: calc(var(--space-32) * 2); border-top: 1px solid var(--border); }
+  .va-hero { border-top: 0; padding-top: calc(var(--space-32) * 2.5); }
+  .va-proof { display: inline-flex; align-items: center; gap: var(--space-8); }
+  .va-sec > .heading, .va-sec > .title { text-wrap: balance; }
+
+  .va-fronts { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: var(--radius-l); }
+  .va-fronts li { display: grid; grid-template-columns: 110px 1fr; gap: var(--space-16); padding: var(--space-12) var(--space-16); }
+  .va-fronts li + li { border-top: 1px solid var(--border); }
+  .va-front-label { font-weight: 500; }
+
+  .va-steps { display: flex; flex-direction: column; gap: var(--space-16); }
+  .va-steps li { display: grid; grid-template-columns: 32px 1fr; gap: var(--space-12); }
+  .va-steps .code { padding-top: 3px; }
+  .va-step-title { font-weight: 500; margin-bottom: var(--space-2); }
+
+  .va-frame { border: 1px solid var(--border); border-radius: var(--radius-l); overflow: hidden; background: var(--bg-raised); }
+  .va-frame iframe { width: 100%; height: 600px; }
+
+  .va-featured { display: flex; flex-direction: column; gap: var(--space-12); }
+  .va-video { aspect-ratio: 16 / 9; border: 1px solid var(--border); border-radius: var(--radius-l); overflow: hidden; background: var(--bg-sunken); }
+  .va-video iframe { width: 100%; height: 100%; }
+  .va-featured figcaption { display: flex; flex-direction: column; gap: var(--space-2); }
+  .va-who { font-weight: 500; }
+
+  .va-others { display: flex; flex-direction: column; gap: var(--space-24); padding-top: var(--space-16); border-top: 1px solid var(--border); margin-top: var(--space-8); }
+  .va-others blockquote { margin-bottom: var(--space-8); }
+
+  .va-prose { display: flex; flex-direction: column; gap: var(--space-16); }
+  .va-prose strong { font-weight: 600; }
+
+  .va-panel { display: flex; flex-direction: column; gap: var(--space-12); padding: var(--space-24); background: var(--bg-sunken); border: 1px solid var(--border); border-radius: var(--radius-xl); }
+
+  .va-footer { max-width: var(--content-width); margin-inline: auto; padding: var(--space-24) var(--space-32); border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: var(--space-16); justify-content: space-between; }
+  .va-footer-links { display: flex; gap: var(--space-16); }
+
+  @media (max-width: 640px) {
+    .va-nav { display: none; }
+    .va-bar-in, .va-col, .va-footer { padding-inline: var(--space-16); }
+    .va-fronts li { grid-template-columns: 1fr; gap: var(--space-4); }
+    .va-frame iframe { height: 520px; }
+  }
+</style>

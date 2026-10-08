@@ -1,0 +1,173 @@
+---
+// Variante B — « Rail » : rail latéral fixe (nom, navigation, formulaire toujours visible), contenu qui défile à droite.
+import Icon from "./Icon.astro";
+import PdForm from "./PdForm.astro";
+import { site } from "../../content/site";
+const { nav, hero, problem, method, podcast, testimonials, about, newsletter, footer } = site;
+const inline = (s: string) => s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+---
+
+<div class="vb">
+  <aside class="vb-rail">
+    <div class="vb-rail-top">
+      <a href="#top" class="quiet vb-name">{nav.brand.first} {nav.brand.last}</a>
+      <button class="pd-button mod-icon theme-toggle" data-theme-toggle aria-label="Changer de thème">
+        <Icon name="sun" class="ico-sun" /><Icon name="moon" class="ico-moon" />
+      </button>
+    </div>
+    <p class="muted">{hero.sub}</p>
+    <nav class="vb-nav" aria-label="Sections">
+      <a class="quiet" href="#probleme">Le problème</a>
+      <a class="quiet" href="#methode">La méthode</a>
+      <a class="quiet" href="#podcast">Le podcast</a>
+      <a class="quiet" href="#temoignages">Témoignages</a>
+      <a class="quiet" href="#about">À propos</a>
+    </nav>
+    <div class="vb-rail-form" id="newsletter">
+      <div class="vb-rail-form-title">{newsletter.eyebrow}</div>
+      <p class="ui-small muted">{newsletter.sub}</p>
+      <PdForm id="vb-rail-email" cta={newsletter.cta} placeholder={newsletter.placeholder} stacked />
+      <p class="caption muted">{newsletter.disclaimer}</p>
+    </div>
+    <footer class="vb-rail-foot caption muted">
+      <span>© {new Date().getFullYear()} {footer.copyright}</span>
+      <span class="vb-rail-links">{footer.links.map((l) => <a class="quiet" href={l.href}>{l.label}</a>)}</span>
+    </footer>
+  </aside>
+
+  <main class="vb-main" id="top">
+    <section class="vb-sec vb-hero">
+      <p class="caption muted">{hero.eyebrow}</p>
+      <h1 class="title">{hero.title} <span class="brand">{hero.titleAccent}</span></h1>
+      <p class="body muted">{hero.proof}</p>
+      <a href="#newsletter" class="pd-button vb-hero-cta">{hero.cta} <Icon name="arrow-right" size={16} /></a>
+    </section>
+
+    <section class="vb-sec" id="probleme">
+      <h2 class="heading">{problem.title} {problem.titleBreak}</h2>
+      <div class="vb-strip">
+        {problem.items.map((it) => (
+          <div class="vb-cell">
+            <div class="vb-cell-label">{it.label}</div>
+            <p class="muted">{it.text}</p>
+          </div>
+        ))}
+      </div>
+      <div class="pd-callout mod-warning">
+        <div class="pd-callout-title"><Icon name="triangle-alert" /> Résultat</div>
+        <div class="pd-callout-body"><p>{problem.outcome}</p></div>
+      </div>
+    </section>
+
+    <section class="vb-sec" id="methode">
+      <h2 class="heading">{method.title} <span class="brand">{method.titleAccent}</span></h2>
+      <p class="body muted">{method.intro}</p>
+      <ol class="vb-timeline">
+        {method.steps.map((s) => (
+          <li>
+            <span class="pd-badge">{s.num}</span>
+            <div class="vb-step-title">{s.title}</div>
+            <p class="muted">{s.text}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="vb-sec" id="podcast">
+      <h2 class="heading">{podcast.title}</h2>
+      <p class="body muted">{podcast.sub}</p>
+      <div class="vb-frame">
+        <iframe src={`https://player.captivate.fm/show/${podcast.captivateShowId}`} title="Podcast Damien Pugin" loading="lazy" scrolling="no" allow="clipboard-write"></iframe>
+      </div>
+    </section>
+
+    <section class="vb-sec" id="temoignages">
+      <h2 class="heading">{testimonials.title} {testimonials.titleBreak}</h2>
+      <figure class="vb-featured">
+        <div class="vb-video">
+          <iframe src={`https://www.youtube.com/embed/${testimonials.featured.youtubeId}`} title={`Témoignage ${testimonials.featured.name}`} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="vb-featured-text">
+          <blockquote class="pd-quote">{testimonials.featured.quote}</blockquote>
+          <figcaption>
+            <span class="vb-who">{testimonials.featured.name}</span>
+            <span class="caption muted">{testimonials.featured.title} · {testimonials.featured.site}</span>
+          </figcaption>
+        </div>
+      </figure>
+      <ul class="vb-others">
+        {testimonials.others.map((t) => (
+          <li>
+            <blockquote class="pd-quote">{t.quote}</blockquote>
+            <div class="vb-who">{t.name}</div>
+            <div class="caption muted">{t.title}{t.site && ` · ${t.site}`}</div>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="vb-sec" id="about">
+      <h2 class="heading">{about.title} {about.titleLine2} <span class="brand">{about.titleAccent}</span></h2>
+      <div class="vb-prose body">
+        {about.paragraphs.map((p) => <p set:html={inline(p)} />)}
+        <p><a href="#newsletter" class="link">{about.outro.linkText}</a> {about.outro.suffix}</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<style>
+  .vb { display: grid; grid-template-columns: 320px 1fr; min-height: 100vh; }
+  .vb-rail { position: sticky; top: 0; height: 100vh; overflow: auto; display: flex; flex-direction: column; gap: var(--space-24); padding: var(--space-24) var(--space-24); background: var(--bg-sunken); border-right: 1px solid var(--border); }
+  .vb-rail-top { display: flex; align-items: center; justify-content: space-between; }
+  .vb-name { font-weight: 600; }
+  .vb-nav { display: flex; flex-direction: column; }
+  .vb-nav a { padding: var(--space-4) var(--space-8); margin-inline: calc(-1 * var(--space-8)); border-radius: var(--radius-s); color: var(--text-muted); }
+  .vb-nav a:hover { background: var(--hover); color: var(--text); }
+  .vb-rail-form { display: flex; flex-direction: column; gap: var(--space-8); padding: var(--space-16); background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-l); margin-top: auto; }
+  .vb-rail-form-title { font-weight: 600; }
+  .vb-rail-foot { display: flex; flex-direction: column; gap: var(--space-4); }
+  .vb-rail-links { display: flex; gap: var(--space-12); }
+
+  .vb-main { min-width: 0; padding-inline: var(--space-32); }
+  .vb-sec { max-width: var(--content-width); display: flex; flex-direction: column; gap: var(--space-16); padding-block: calc(var(--space-32) * 2); border-top: 1px solid var(--border); }
+  .vb-hero { border-top: 0; padding-top: calc(var(--space-32) * 3); }
+  .vb-hero .title { font-size: 29px; }
+  .vb-hero-cta { align-self: flex-start; display: inline-flex; align-items: center; gap: var(--space-8); text-decoration: none; }
+  .vb-sec > .heading, .vb-sec > .title { text-wrap: balance; }
+
+  .vb-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius-l); overflow: hidden; }
+  .vb-cell { background: var(--bg); padding: var(--space-16); display: flex; flex-direction: column; gap: var(--space-4); }
+  .vb-cell-label { font-weight: 500; }
+
+  .vb-timeline { display: flex; flex-direction: column; gap: var(--space-24); padding-left: var(--space-24); border-left: 1px solid var(--border); }
+  .vb-timeline li { position: relative; display: flex; flex-direction: column; gap: var(--space-4); }
+  .vb-timeline .pd-badge { position: absolute; left: calc(-1 * var(--space-24) - 18px); top: 0; }
+  .vb-step-title { font-weight: 500; }
+
+  .vb-frame { border: 1px solid var(--border); border-radius: var(--radius-l); overflow: hidden; background: var(--bg-raised); }
+  .vb-frame iframe { width: 100%; height: 600px; }
+
+  .vb-featured { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-16); align-items: start; }
+  .vb-video { aspect-ratio: 16 / 9; border: 1px solid var(--border); border-radius: var(--radius-l); overflow: hidden; background: var(--bg-sunken); }
+  .vb-video iframe { width: 100%; height: 100%; }
+  .vb-featured-text { display: flex; flex-direction: column; gap: var(--space-8); }
+  .vb-featured figcaption { display: flex; flex-direction: column; gap: var(--space-2); }
+  .vb-who { font-weight: 500; }
+  .vb-others { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-24); padding-top: var(--space-16); border-top: 1px solid var(--border); }
+  .vb-others blockquote { margin-bottom: var(--space-8); }
+
+  .vb-prose { display: flex; flex-direction: column; gap: var(--space-16); }
+  .vb-prose strong { font-weight: 600; }
+
+  @media (max-width: 900px) {
+    .vb { grid-template-columns: 1fr; }
+    .vb-rail { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--border); }
+    .vb-rail-form { margin-top: 0; }
+    .vb-nav { flex-direction: row; flex-wrap: wrap; gap: var(--space-4); }
+    .vb-main { padding-inline: var(--space-16); }
+    .vb-hero { padding-top: calc(var(--space-32) * 1.5); }
+    .vb-strip, .vb-featured, .vb-others { grid-template-columns: 1fr; }
+    .vb-frame iframe { height: 520px; }
+  }
+</style>
