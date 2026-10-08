@@ -1,20 +1,13 @@
 ---
 // PROTOTYPE JETABLE — redesign du site avec le design system Paradigm.
-// Trois variantes structurellement différentes sur cette route, switchables via ?variant=A|B|C
-// (barre flottante en bas, ← → au clavier). A = colonne document, B = rail latéral, C = grille.
+// Variante retenue : A3R3 (grand format, hero sienna), copy offre Expert Asymétrique.
 import "../styles/prototype/tokens.css";
 import "../styles/prototype/bundle.css";
-import VariantA from "../components/prototype/VariantA.astro";
-import VariantB from "../components/prototype/VariantB.astro";
-import VariantC from "../components/prototype/VariantC.astro";
+import VariantA3 from "../components/prototype/VariantA3.astro";
 import Switcher from "../components/prototype/Switcher.astro";
 import { site } from "../content/site";
 
-const variants = [
-  { key: "A", name: "Document" },
-  { key: "B", name: "Rail" },
-  { key: "C", name: "Grille" },
-];
+const variants = [{ key: "A3R3", name: "Hero sienna" }];
 ---
 
 <!doctype html>
@@ -34,9 +27,7 @@ const variants = [
     </script>
   </head>
   <body>
-    <div data-variant="A"><VariantA /></div>
-    <div data-variant="B" hidden><VariantB /></div>
-    <div data-variant="C" hidden><VariantC /></div>
+    <div data-variant="A3R3"><VariantA3 /></div>
     <Switcher variants={variants} />
 
     <script>

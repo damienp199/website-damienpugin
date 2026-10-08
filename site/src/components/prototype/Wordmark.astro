@@ -1,0 +1,13 @@
+---
+// Wordmark damienpugin] adapté à Paradigm : pile système, light + bold, crochet sienna.
+interface Props { size?: number }
+const { size = 17 } = Astro.props;
+---
+<span class="wm" style={`font-size:${size}px`}><span class="wm-a">damien</span><span class="wm-b">pugin</span><span class="wm-br" aria-hidden="true">]</span></span>
+
+<style>
+  .wm { font-family: var(--font-sans); line-height: 1; letter-spacing: -0.02em; white-space: nowrap; }
+  .wm-a { font-weight: 300; }
+  .wm-b { font-weight: 700; }
+  .wm-br { font-weight: 500; color: var(--accent); margin-left: 0.04em; }
+</style>
