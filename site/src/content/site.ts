@@ -72,7 +72,6 @@ export const site = {
     eyebrow: "Le podcast",
     title: "Le Podcast.",
     sub: "Je documente mes systèmes, stratégies et réflexions en live.",
-    captivateShowId: "69358d2b-59c1-4481-b4d8-b42082d1e4af",
   },
 
   testimonials: {
