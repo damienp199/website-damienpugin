@@ -1,9 +1,8 @@
 ---
-// Variante A3R3 — « Grand format, hero sienna » : offre Expert Asymétrique.
-// Titres XXL à gauche, contenu à droite (grille 5/7). Hero et newsletter en sienna plein cadre, méthode sur bande sombre.
+// Variante A3R3 — « Grand format, hero sienna » : home Expert Asymétrique (philosophie + promesse, CTA WhatsApp).
+// Titres XXL à gauche, contenu à droite (grille 5/7). Hero et contact en sienna plein cadre, philosophie sur bande sombre.
 // Peu de texte : chaque section porte un visuel (pictos, schéma « tout passe par toi », pipeline, frise).
 import Icon from "./Icon.astro";
-import PdForm from "./PdForm.astro";
 import Wordmark from "./Wordmark.astro";
 import Saw from "./Saw.astro";
 import { site } from "../../content/site";
@@ -19,9 +18,25 @@ const icons = [
   ["M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z", "M12 22V12", "m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7", "m7.5 4.27 9 5.15"],
   ["M8 2h8v4H8z", "M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2", "M12 11h4", "M12 16h4", "M8 11h.01", "M8 16h.01"],
 ];
-const { nav, podcast, testimonials, newsletter: nl, footer } = site;
-const { hero, outcomes, problem, method, statement, quotes, about, newsletter } = proto;
-const [featured, ...others] = quotes;
+const { podcast, testimonials: legacy, footer } = site;
+const { whatsapp, hero, outcomes, problem, plan, philosophy, quotes, why, about, contact } = proto;
+// Typo française : espace fine insécable avant ! ? ; : » et après «
+const fr = (t: string) => t.replace(/ ([!?;:»])/g, "\u202F$1").replace(/« /g, "«\u202F");
+// Témoignages : nouveaux puis anciens, même format (Jean + vidéo). Répartis en 2 colonnes équilibrées
+// (glouton sur une hauteur estimée) pour éviter les trous d'une grille à rangées.
+type Q = { text: string; name: string; title: string; video?: string };
+const allQuotes: Q[] = [
+  ...quotes.items.map((q) => ({ text: q.text, name: q.name, title: q.title })),
+  { text: legacy.featured.quote, name: legacy.featured.name, title: legacy.featured.title, video: legacy.featured.youtubeId },
+  ...legacy.others.map((q) => ({ text: q.quote, name: q.name, title: q.title })),
+];
+const cols: Q[][] = [[], []];
+const h = [0, 0];
+for (const q of allQuotes) {
+  const i = h[0] <= h[1] ? 0 : 1;
+  cols[i].push(q);
+  h[i] += q.text.length + 160 + (q.video ? 420 : 0);
+}
 // Schéma problème : trois fronts reliés à toi
 // Triangle équilatéral centré sur toi : pastilles à égale distance de toi et entre elles
 const C = { x: 280, y: 180 }, R = 155;
@@ -69,7 +84,7 @@ fronts.forEach((f) => {
   <header class="a3-bar a3-wrap">
     <a href="#top" class="quiet" aria-label="Damien Pugin, accueil"><Wordmark size={20} /></a>
     <nav class="a3-nav" aria-label="Sections">
-      <a class="quiet muted" href="#methode">Méthode</a>
+      <a class="quiet muted" href="#plan-titre">Le plan</a>
       <a class="quiet muted" href="#temoignages">Témoignages</a>
       <a class="quiet muted" href="#podcast">Podcast</a>
       <a class="quiet muted" href="#about">À propos</a>
@@ -78,7 +93,7 @@ fronts.forEach((f) => {
       <button class="pd-button mod-icon theme-toggle" data-theme-toggle aria-label="Changer de thème">
         <Icon name="sun" class="ico-sun" /><Icon name="moon" class="ico-moon" />
       </button>
-      <a href="#newsletter" class="pd-button">{nav.cta}</a>
+      <a href={whatsapp} class="pd-button">{hero.cta}</a>
     </div>
   </header>
 
@@ -86,40 +101,10 @@ fronts.forEach((f) => {
     <section class="a3-red-zone">
       <div class="a3-hero a3-wrap">
         <h1 class="a3-display">{hero.title}</h1>
-        <div class="a3-hero-foot">
-          <p class="a3-lede">{hero.sub}</p>
-          <div class="a3-hero-form">
-            <PdForm id={`${uid}-hero-email`} cta={hero.cta} placeholder={nl.placeholder} />
-            <p class="a3-proof"><span class="a3-live"></span>{hero.proof}</p>
-          </div>
+        <div class="a3-cta-group">
+          <p class="a3-cta-lead">{hero.ctaLead}</p>
+          <a href={whatsapp} class="pd-button mod-primary a3-cta">{hero.cta}</a>
         </div>
-      </div>
-    </section>
-
-    <section class="a3-words a3-wrap" aria-label="Ce que tu obtiens">
-      <div>
-        <svg class="a3-picto" viewBox="0 0 64 64" aria-hidden="true">
-          <path d="M8 30 L30 8 H56 V34 L34 56 Z" />
-          <circle class="hot-fill" cx="45" cy="19" r="4" />
-        </svg>
-        <h2>{outcomes[0].title}</h2><p>{outcomes[0].text}</p>
-      </div>
-      <div>
-        <svg class="a3-picto" viewBox="0 0 64 64" aria-hidden="true">
-          <path d="M6 56 H58" />
-          <path class="hot" d="M8 46 L22 38 L36 30 L50 22 L58 18" />
-          <circle class="hot-fill" cx="58" cy="18" r="4" />
-        </svg>
-        <h2>{outcomes[1].title}</h2><p>{outcomes[1].text}</p>
-      </div>
-      <div>
-        <svg class="a3-picto" viewBox="0 0 64 64" aria-hidden="true">
-          <circle cx="32" cy="32" r="20" />
-          <circle class="hot-fill" cx="32" cy="12" r="5" />
-          <circle cx="49" cy="42" r="5" class="bg-fill" />
-          <circle cx="15" cy="42" r="5" class="bg-fill" />
-        </svg>
-        <h2>{outcomes[2].title}</h2><p>{outcomes[2].text}</p>
       </div>
     </section>
 
@@ -130,7 +115,10 @@ fronts.forEach((f) => {
           <p class="a3-q-sub">{problem.titleAltSub}</p>
         </div>
       ) : (
-        <h2 class="a3-h2">{problem.title}</h2>
+        <div class="a3-stick">
+          {problem.questions.map((q) => <p class="a3-ask">{fr(q)}</p>)}
+          <h2 class="a3-h2">{problem.title}</h2>
+        </div>
       )}
       <div class="a3-body">
         <svg class="a3-fronts" viewBox="-40 -50 640 440" role="img" aria-label={`Tu jongles entre ${problem.fronts.join(", ").toLowerCase()} : tout passe par toi.`}>
@@ -164,48 +152,75 @@ fronts.forEach((f) => {
       </div>
     </section>
 
-    <section class="a3-band" id="methode">
-      <div class="a3-wrap a3-band-in">
-        <div class="a3-band-head">
-          <h2 class="a3-h2">{method.title}</h2>
-          <p class="a3-band-intro">{method.intro}</p>
-        </div>
-        <ol class="a3-pipe">
-          <li class="a3-pipe-end"><span class="a3-pipe-dot"></span>{method.start}</li>
-          {method.steps.map((s, i) => (
-            <li class="a3-pipe-step">
-              <span class="a3-pipe-n">{i + 1}</span>
-              <h3>{s.title}</h3>
-              <p>{s.text}</p>
-            </li>
-          ))}
-          <li class="a3-pipe-end"><span class="a3-pipe-dot is-end"></span>{method.end}</li>
-        </ol>
+    <section class="a3-words a3-wrap" aria-labelledby="plan-titre">
+      <h2 class="a3-plan-title" id="plan-titre"><span>{fr(plan.lead)}</span> {plan.title}</h2>
+      <div>
+        <svg class="a3-picto" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M8 30 L30 8 H56 V34 L34 56 Z" />
+          <circle class="hot-fill" cx="45" cy="19" r="4" />
+        </svg>
+        <h2>{outcomes[0].title}{outcomes[0].text && <span> {outcomes[0].text}</span>}</h2>
+      </div>
+      <div>
+        <svg class="a3-picto" viewBox="0 0 64 64" aria-hidden="true">
+          <rect x="6" y="24" width="14" height="14" rx="2" />
+          <rect x="25" y="24" width="14" height="14" rx="2" />
+          <rect class="hot-fill" x="44" y="24" width="14" height="14" rx="2" />
+        </svg>
+        <h2>{outcomes[1].title}{outcomes[1].text && <span> {outcomes[1].text}</span>}</h2>
+      </div>
+      <div>
+        <svg class="a3-picto" viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="20" />
+          <circle class="hot-fill" cx="32" cy="12" r="5" />
+          <circle cx="49" cy="42" r="5" class="bg-fill" />
+          <circle cx="15" cy="42" r="5" class="bg-fill" />
+        </svg>
+        <h2>{outcomes[2].title}{outcomes[2].text && <span> {outcomes[2].text}</span>}</h2>
       </div>
     </section>
 
-    <section class="a3-statement a3-wrap">
-      <p>{statement}</p>
+    <section class="a3-band" id="expert">
+      <div class="a3-wrap a3-band-in">
+        <div class="a3-band-head">
+          <h2 class="a3-h2">{philosophy.title}</h2>
+          <p class="a3-band-intro">{philosophy.intro}</p>
+        </div>
+        <div class="a3-split" role="img" aria-label={philosophy.split.map((p) => `${p.pct} ${p.label.toLowerCase()}`).join(", ")}>
+          {philosophy.split.map((p) => (
+            <div class:list={["a3-split-part", { "is-hot": p.you }]}>
+              <span class="a3-split-bar"></span>
+              <strong>{p.pct}</strong>
+              <span>{p.label}</span>
+            </div>
+          ))}
+        </div>
+        <p class="a3-band-body">{fr(philosophy.body)}</p>
+      </div>
     </section>
 
     <section class="a3-sec a3-wrap" id="temoignages">
-      <h2 class="a3-h2">{testimonials.title} {testimonials.titleBreak}</h2>
+      <div class="a3-stick">
+        <h2 class="a3-h2">{quotes.title}</h2>
+      </div>
       <div class="a3-body">
-        <figure class="a3-featured">
-          <blockquote>{featured.text}</blockquote>
-          <figcaption><strong>{featured.name}</strong><span class="muted">{featured.title}</span></figcaption>
-          <div class="a3-video">
-            <iframe src={`https://www.youtube.com/embed/${testimonials.featured.youtubeId}`} title={`Témoignage ${testimonials.featured.name}`} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-        </figure>
-        <ul class="a3-others">
-          {others.map((q) => (
-            <li>
-              <blockquote>{q.text}</blockquote>
-              <p><strong>{q.name}</strong><span class="muted">{q.title}</span></p>
-            </li>
+        <div class="a3-others">
+          {cols.map((col) => (
+            <ul>
+              {col.map((q) => (
+                <li>
+                  <blockquote>{fr(q.text)}</blockquote>
+                  <p><strong>{q.name}</strong><span class="muted">{fr(q.title)}</span></p>
+                  {q.video && (
+                    <div class="a3-video">
+                      <iframe src={`https://www.youtube.com/embed/${q.video}`} title={`Témoignage ${q.name}`} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
           ))}
-        </ul>
+        </div>
       </div>
     </section>
 
@@ -219,6 +234,15 @@ fronts.forEach((f) => {
       </div>
     </section>
 
+    <section class="a3-sec a3-wrap" id="pourquoi">
+      <h2 class="a3-h2">{fr(why.title)}</h2>
+      <div class="a3-body a3-why">
+        {why.lines.map((l) => <p>{l}</p>)}
+        <p class="a3-why-punch">{why.punch}</p>
+        <p>{why.close}</p>
+      </div>
+    </section>
+
     <section class="a3-sec a3-wrap" id="about">
       <h2 class="a3-h2">{about.title}</h2>
       <ol class="a3-body a3-time">
@@ -228,18 +252,18 @@ fronts.forEach((f) => {
       </ol>
     </section>
 
-    <section class="a3-red-zone" id="newsletter">
+    <section class="a3-red-zone" id="contact">
       <div class="a3-nl a3-wrap">
-        <h2 class="a3-display a3-nl-title">{newsletter.title}</h2>
-        <div class="a3-hero-foot">
-          <p class="a3-lede">{newsletter.sub}</p>
-          <div class="a3-hero-form">
-            <PdForm id={`${uid}-nl-email`} cta={nl.cta} placeholder={nl.placeholder} />
-            <p class="caption muted">{nl.disclaimer}</p>
-          </div>
+        <p class="a3-lead">{fr(contact.lead)}</p>
+        <h2 class="a3-display a3-nl-title">{contact.title}</h2>
+        <p class="a3-sub">{contact.sub}</p>
+        <div class="a3-cta-group">
+          <p class="a3-cta-lead">{hero.ctaLead}</p>
+          <a href={whatsapp} class="pd-button mod-primary a3-cta">{hero.cta}</a>
         </div>
       </div>
     </section>
+
   </main>
 
   <footer class="a3-footer a3-wrap caption muted">
@@ -259,30 +283,35 @@ fronts.forEach((f) => {
   .a3-bar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: var(--space-24); min-height: 60px; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(10px); }
   .a3-nav { display: flex; gap: var(--space-16); margin-left: auto; }
   .a3-bar-actions { display: flex; align-items: center; gap: var(--space-8); }
+  .a3 :global(.pd-button) { border-radius: 0; }
   .a3-bar-actions .pd-button:not(.mod-icon) { text-decoration: none; padding: 6px 14px; }
 
   .a3-display { font-size: clamp(52px, 10.5vw, 156px); line-height: 0.95; font-weight: 700; letter-spacing: -0.045em; text-wrap: balance; }
-  .a3-hero { min-height: min(calc(100svh - 60px), 820px); display: flex; flex-direction: column; justify-content: space-between; gap: 64px; padding-block: 12vh 64px; }
+  .a3-hero { min-height: min(calc(100svh - 60px), 820px); display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start; padding-block: 12vh 96px; }
   .a3-hero .a3-display { max-width: 11ch; }
-  .a3-hero-foot { display: grid; grid-template-columns: 5fr 7fr; gap: 48px; align-items: end; }
-  .a3-lede { font-size: 22px; line-height: 1.45; color: var(--text-muted); max-width: 22em; }
-  .a3-hero-form { display: flex; flex-direction: column; gap: var(--space-12); }
-  .a3-proof { display: flex; align-items: center; gap: var(--space-8); font-size: 13px; color: var(--text-muted); }
-  .a3-live { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+  /* Bloc promesse (hero + contact) : titre, sous-titre, bouton empilés sur le même bord gauche */
+  .a3-sub { margin-top: var(--space-32); font-size: clamp(22px, 2.2vw, 30px); line-height: 1.3; font-weight: 500; letter-spacing: -0.015em; max-width: 26em; text-wrap: balance; }
+  .a3-lead { font-size: clamp(18px, 1.6vw, 22px); line-height: 1.4; max-width: 30em; margin-bottom: var(--space-24); }
+  .a3-cta-group { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-16); margin-top: 48px; }
+  .a3-sub + .a3-cta-group { margin-top: 40px; }
+  .a3-cta-lead { font-size: clamp(22px, 2.2vw, 30px); line-height: 1.3; font-weight: 500; letter-spacing: -0.015em; }
 
   /* Principes : picto + mot + une ligne */
-  .a3-words { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; padding-block: 64px; border-top: 1px solid var(--border); }
+  .a3-words .a3-plan-title { grid-column: 1 / -1; font-size: clamp(40px, 6.6vw, 96px); line-height: 1; font-weight: 700; letter-spacing: -0.04em; text-wrap: balance; margin-bottom: 48px; }
+  .a3-words .a3-plan-title span { display: block; color: var(--text-muted); }
+  .a3-words { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; padding-block: 128px; border-top: 1px solid var(--border); }
   .a3-picto { width: 72px; height: 72px; margin-bottom: var(--space-24); fill: none; stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
   .a3-picto .hot { stroke: var(--hot); }
   .a3-picto .hot-fill { fill: var(--hot); stroke: var(--hot); }
   .a3-picto .bg-fill { fill: var(--bg); }
-  .a3-words h2 { font-size: clamp(28px, 3.4vw, 44px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: var(--space-8); }
+  .a3-words h2 span { color: var(--text-muted); }
+  .a3-words h2 { font-size: clamp(24px, 2.6vw, 34px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: var(--space-8); }
   .a3-words p { font-size: 17px; line-height: 1.5; color: var(--text-muted); }
 
   .a3-sec { display: grid; grid-template-columns: 5fr 7fr; gap: 48px; padding-block: 128px; border-top: 1px solid var(--border); }
   .a3-h2 { font-size: clamp(34px, 4.6vw, 64px); line-height: 1.02; font-weight: 700; letter-spacing: -0.035em; text-wrap: balance; }
   .a3-sec > .a3-h2, .a3-stick { align-self: start; position: sticky; top: 96px; }
-  .a3-side { margin-top: var(--space-16); font-size: 18px; line-height: 1.5; color: var(--text-muted); }
+  .a3-side { margin-top: var(--space-16); font-size: 20px; line-height: 1.5; color: var(--text-muted); }
 
   /* Problème : tout passe par toi */
   .a3-fronts { display: block; width: 100%; height: auto; overflow: visible; }
@@ -306,12 +335,35 @@ fronts.forEach((f) => {
   .a3-outcome-k { font-size: 14px; color: var(--text-muted); min-width: 5.5em; }
   .a3-outcome p { font-size: clamp(22px, 2.2vw, 28px); font-weight: 500; letter-spacing: -0.015em; line-height: 1.2; }
 
+  .a3-ask { font-size: clamp(20px, 1.8vw, 24px); line-height: 1.35; color: var(--text-muted); margin-bottom: var(--space-16); max-width: 20em; }
+  .a3-ask + .a3-h2 { margin-top: var(--space-24); }
+  .a3-cta { align-self: flex-start; text-decoration: none; padding: 16px 28px; font-size: 18px; font-weight: 600; border-radius: 0; }
+  .a3-h3 { font-size: clamp(26px, 2.8vw, 36px); line-height: 1.1; font-weight: 700; letter-spacing: -0.03em; }
+  .a3-others .a3-video { margin-top: var(--space-8); }
+  .a3-why { display: flex; flex-direction: column; gap: var(--space-24); }
+  .a3-why p { font-size: clamp(20px, 1.8vw, 24px); line-height: 1.4; color: var(--text-muted); }
+  .a3-why .a3-why-punch { font-size: clamp(28px, 3vw, 40px); line-height: 1.15; font-weight: 600; letter-spacing: -0.025em; color: var(--text); margin-block: var(--space-16); }
+
+  /* Philosophie : 80 / 20 sur bande inversée */
+  .a3-band-body { font-size: clamp(22px, 2.2vw, 30px); line-height: 1.3; font-weight: 500; letter-spacing: -0.015em; color: var(--grey-10); max-width: 30em; text-wrap: balance; }
+  .a3-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 8fr) minmax(0, 1fr); gap: 6px; }
+  .a3-split-part { white-space: nowrap; }
+  .a3-split-part:nth-child(2) { align-items: center; }
+  .a3-split-part:last-child { align-items: flex-end; }
+  .a3-split-part:last-child .a3-split-bar, .a3-split-part:nth-child(2) .a3-split-bar { align-self: stretch; }
+  .a3-split-part { display: flex; flex-direction: column; gap: var(--space-12); }
+  .a3-split-bar { height: 14px; border-radius: 7px; background: var(--pipe); }
+  .a3-split-part.is-hot .a3-split-bar { background: var(--pipe-n); }
+  .a3-split-part strong { font-size: clamp(36px, 4.4vw, 64px); font-weight: 700; letter-spacing: -0.04em; line-height: 1; margin-top: var(--space-12); }
+  .a3-split-part.is-hot strong { color: var(--pipe-n); }
+  .a3-split-part span:last-child { font-size: 17px; line-height: 1.4; color: var(--pipe-text); }
+
   /* Méthode : pipeline sur bande inversée */
   .a3-band { background: var(--grey-100); color: var(--grey-10); --pipe: var(--grey-80); --pipe-text: var(--grey-40); --pipe-n: var(--accent); }
   [data-theme="dark"] .a3-band { background: #141414; }
   .a3-band-in { padding-block: 128px; display: flex; flex-direction: column; gap: 80px; }
-  .a3-band-head { display: grid; grid-template-columns: 5fr 7fr; gap: 48px; align-items: end; }
-  .a3-band-intro { font-size: 20px; line-height: 1.5; color: var(--pipe-text); max-width: 26em; }
+  .a3-band-head { display: flex; flex-direction: column; gap: var(--space-24); }
+  .a3-band-intro { font-size: clamp(22px, 2.2vw, 30px); line-height: 1.3; font-weight: 500; letter-spacing: -0.015em; color: var(--pipe-text); max-width: 26em; text-wrap: balance; }
   .a3-pipe { position: relative; display: grid; grid-template-columns: auto repeat(3, 1fr) auto; gap: 40px; }
   .a3-pipe::before { content: ""; position: absolute; left: 0; right: 0; top: 28px; height: 1px; background: var(--pipe); }
   .a3-pipe li { position: relative; }
@@ -325,12 +377,11 @@ fronts.forEach((f) => {
   .a3-pipe p { font-size: 17px; line-height: 1.45; color: var(--pipe-text); }
 
   /* Témoignages : citations courtes en grand */
-  .a3-featured { display: flex; flex-direction: column; gap: var(--space-16); }
-  .a3-featured blockquote { font-size: clamp(34px, 4.2vw, 56px); line-height: 1.05; letter-spacing: -0.035em; font-weight: 600; text-wrap: balance; }
   .a3-video { aspect-ratio: 16 / 9; border-radius: var(--radius-xl); overflow: hidden; background: var(--bg-sunken); margin-top: var(--space-24); }
   .a3-video iframe { width: 100%; height: 100%; }
-  .a3 figcaption, .a3-others p { display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
-  .a3-others { display: grid; grid-template-columns: 1fr 1fr; gap: 48px var(--space-32); margin-top: 80px; }
+  .a3-others p { display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+  .a3-others { display: grid; grid-template-columns: 1fr 1fr; gap: 56px var(--space-32); align-items: start; }
+  .a3-others ul { display: flex; flex-direction: column; gap: 56px; }
   .a3-others li { display: flex; flex-direction: column; gap: var(--space-12); }
   .a3-others blockquote { font-size: 22px; line-height: 1.25; letter-spacing: -0.015em; font-weight: 500; text-wrap: balance; }
   .a3-others blockquote::before { content: "“"; display: block; font-size: 48px; line-height: 0.6; height: 22px; color: var(--hot); font-weight: 700; }
@@ -345,37 +396,33 @@ fronts.forEach((f) => {
   .a3-time li::before { content: ""; position: absolute; left: -40px; top: 12px; width: 13px; height: 13px; border-radius: 50%; background: var(--bg); border: 1.5px solid var(--text); }
   .a3-time li:last-child::before { background: var(--hot); border-color: var(--hot); }
   .a3-year { font-size: clamp(28px, 3vw, 40px); font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
-  .a3-time p { font-size: 19px; line-height: 1.45; color: var(--text-muted); max-width: 28em; }
+  .a3-time p { font-size: 20px; line-height: 1.45; color: var(--text-muted); max-width: 28em; }
 
-  .a3-nl { display: flex; flex-direction: column; gap: 64px; padding-block: 128px; border-top: 1px solid var(--border); }
+  .a3-nl { display: flex; flex-direction: column; align-items: flex-start; padding-block: 128px; border-top: 1px solid var(--border); }
   .a3-nl-title { font-size: clamp(44px, 7.5vw, 112px); max-width: 14ch; }
 
   .a3-footer { display: flex; flex-wrap: wrap; gap: var(--space-16); padding-block: var(--space-32) 96px; border-top: 1px solid var(--border); }
   .a3-footer-links { display: flex; gap: var(--space-16); margin-left: auto; }
 
 
-  /* Hero et newsletter : sienna plein cadre, texte grey-100 */
+  /* Hero et contact : sienna plein cadre, texte grey-100 */
   .a3-red-zone { background: var(--accent); color: var(--on-red); }
   .a3-nl { border-top: 0; }
-  .a3-red-zone .a3-lede, .a3-red-zone .a3-proof, .a3-red-zone .muted { color: var(--on-red-muted); }
-  .a3-red-zone .a3-live { background: var(--grey-00); box-shadow: 0 0 0 4px color-mix(in srgb, var(--grey-00) 30%, transparent); }
+  .a3-red-zone .a3-lead, .a3-red-zone .muted { color: var(--on-red-muted); }
   .a3-red-zone :global(.pd-input) { background: var(--grey-00); border-color: transparent; color: var(--grey-100); }
   .a3-red-zone :global(.pd-input::placeholder) { color: var(--grey-60); }
   .a3-red-zone :global(.pd-button.mod-primary) { background: var(--grey-100); border-color: var(--grey-100); color: var(--grey-00); }
   .a3-red-zone :global(.pd-button.mod-primary:hover) { background: var(--grey-90); }
   .a3-red-zone :global(:focus-visible) { outline-color: var(--grey-100); }
-  .a3-words { border-top: 0; }
+  .a3-red-zone + .a3-sec, .a3-band + .a3-sec { border-top: 0; }
 
-  /* Phrase manifeste */
-  .a3-statement { padding-block: 160px; }
-  .a3-statement p { font-size: clamp(40px, 6.6vw, 96px); line-height: 1; font-weight: 700; letter-spacing: -0.04em; max-width: 15ch; text-wrap: balance; }
 
   @media (max-width: 900px) {
     .a3-wrap { padding-inline: var(--space-16); }
     .a3-nav { display: none; }
     .a3-bar-actions { margin-left: auto; }
-    .a3-hero { min-height: 0; padding-block: 64px; gap: 40px; }
-    .a3-hero-foot, .a3-sec, .a3-band-head { grid-template-columns: 1fr; gap: var(--space-32); }
+    .a3-hero { min-height: 0; padding-block: 64px; }
+    .a3-sec { grid-template-columns: 1fr; gap: var(--space-32); }
     .a3-sec, .a3-nl, .a3-band-in { padding-block: 72px; }
     .a3-sec > .a3-h2, .a3-stick { position: static; }
     .a3-words { grid-template-columns: 1fr; gap: 40px; }
@@ -385,8 +432,11 @@ fronts.forEach((f) => {
     .a3-pipe-end:last-child { align-items: center; }
     .a3-pipe-dot { position: absolute; left: -54px; }
     .a3-pipe-n { position: absolute; left: -76px; top: -12px; width: 56px; height: 56px; margin: 0; }
-    .a3-others { grid-template-columns: 1fr; margin-top: 48px; }
-    .a3-statement { padding-block: 96px; }
-    .a3-frame iframe { height: 520px; }
+    .a3-others { grid-template-columns: 1fr; }
+    .a3-outcome { flex-direction: column; gap: var(--space-8); }
+    .a3-bar-actions .pd-button:not(.mod-icon) { display: none; }
+    .a3-split-part strong { font-size: 26px; }
+    .a3-split-part span:last-child { font-size: 14px; }
+      .a3-frame iframe { height: 520px; }
   }
 </style>
