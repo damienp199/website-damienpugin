@@ -10,3 +10,7 @@ dist
 **/__pycache__/
 tmp/
 .wrangler/
+.agents/
+skills-lock.json
+.impeccable/
+PRODUCT.md
