@@ -1,92 +1,38 @@
 ---
-import Base from "./Base.astro";
+// Pages de remerciement Kit : un message, pas de bouton d'action.
+import Paradigm from "./Paradigm.astro";
+import SiteHeader from "../components/prototype/SiteHeader.astro";
+import SiteFooter from "../components/prototype/SiteFooter.astro";
 
-interface Props {
-  title: string;
-  eyebrow?: string;
-  heading: string;
-  accent?: string;
-}
-
+interface Props { title: string; eyebrow?: string; heading: string; accent?: string }
 const { title, eyebrow, heading, accent } = Astro.props;
 ---
 
-<Base title={title}>
-  <header class="container-narrow pt-10 pb-8">
-    <a href="/" class="eyebrow link-underline link-draw">← Damien Pugin</a>
-  </header>
-
-  <main class="container-narrow thanks">
-    {eyebrow && <p class="eyebrow mb-4 fade-up">{eyebrow}</p>}
-    <h1 class="thanks__title fade-up">
-      {heading}{accent && <> <em class="thanks__accent">{accent}</em></>}
-    </h1>
-
-    <div class="thanks__body fade-up">
-      <slot />
-    </div>
+<Paradigm title={title}>
+  <SiteHeader cta={false} />
+  <main class="pg-wrap ty">
+    {eyebrow && <p class="ty-lead">{eyebrow}</p>}
+    <h1>{heading}{accent && <> <span class="ty-accent">{accent}</span></>}</h1>
+    <div class="ty-body"><slot /></div>
+    <p class="ty-back"><a class="pd-button" href="/">Retour à l'accueil</a></p>
   </main>
-
-  <footer class="border-t hairline">
-    <div class="container-narrow py-8 flex flex-wrap gap-4 items-center justify-between text-sm text-[color:var(--color-muted)]">
-      <span>© {new Date().getFullYear()} Damien Pugin.</span>
-      <a href="/" class="link-underline link-draw">Retour à l'accueil</a>
-    </div>
-  </footer>
-</Base>
+  <SiteFooter />
+</Paradigm>
 
 <style>
-  .thanks {
-    padding-top: clamp(3rem, 8vh, 6rem);
-    padding-bottom: clamp(5rem, 12vh, 9rem);
-    max-width: 44rem;
-  }
-  .thanks__title {
-    font-family: var(--font-display);
-    font-size: clamp(2.5rem, 6.5vw, 5rem);
-    line-height: 0.98;
-    letter-spacing: -0.035em;
-    font-weight: 900;
-    font-variation-settings: "opsz" 144, "SOFT" 20;
-    margin-bottom: 2rem;
-    color: var(--color-ink);
-  }
-  .thanks__accent {
-    font-style: italic;
-    font-weight: 900;
-    font-variation-settings: "opsz" 144, "SOFT" 40;
-    color: var(--color-gold);
-  }
-  .thanks__body {
-    font-size: clamp(1.05rem, 1.4vw, 1.2rem);
-    line-height: 1.7;
-    color: var(--color-ink-2, var(--color-muted));
-    max-width: 38rem;
-  }
-</style>
-
-<style is:global>
-  .thanks__body p { margin-bottom: 1.15rem; }
-  .thanks__body p:last-child { margin-bottom: 0; }
-  .thanks__body strong { color: var(--color-ink); }
-  .thanks__body a {
-    color: var(--color-ink);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-color: var(--color-hairline-2);
-  }
-  .thanks__body a:hover { text-decoration-color: var(--color-gold); }
-  .thanks__body ol {
-    list-style: decimal;
-    padding-left: 1.3rem;
-    margin: 0.5rem 0 1.25rem;
-  }
-  .thanks__body ol li { margin-bottom: 0.5rem; }
-  .thanks__signoff {
-    margin-top: 2rem;
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 1.15rem;
-    color: var(--color-ink);
-  }
+  .ty { min-height: calc(100svh - 64px - 160px); padding-block: clamp(56px, 10vw, 128px) clamp(72px, 10vw, 128px); }
+  .ty-lead { margin-bottom: var(--space-16); font-size: clamp(19px, 1.8vw, 24px); font-weight: 500; color: var(--text-muted); }
+  h1 { font-size: clamp(52px, 10vw, 136px); line-height: 0.98; font-weight: 700; letter-spacing: -0.04em; text-wrap: balance; }
+  .ty-accent { color: var(--accent); }
+  .ty-body { max-width: 38em; margin-top: clamp(32px, 5vw, 64px); font-size: clamp(18px, 1.6vw, 21px); line-height: 1.55; color: var(--text-muted); }
+  .ty-body :global(p), .ty-body :global(ol) { margin-bottom: var(--space-16); }
+  .ty-body :global(strong) { font-weight: 600; color: var(--text); }
+  .ty-body :global(ol) { padding-left: 1.3em; list-style: decimal; }
+  .ty-body :global(li) { margin-bottom: var(--space-8); }
+  .ty-body :global(li::marker) { color: var(--text-faint); }
+  .ty-body :global(a) { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); text-underline-offset: 3px; }
+  .ty-body :global(a:hover) { color: var(--link-hover); }
+  .ty-body :global(.thanks__signoff) { margin-top: var(--space-32); margin-bottom: 0; font-weight: 500; color: var(--text); }
+  .ty-back { margin-top: clamp(40px, 5vw, 64px); }
+  .ty-back .pd-button { display: inline-block; padding: 9px 16px; text-decoration: none; }
 </style>

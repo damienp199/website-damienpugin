@@ -1,0 +1,20 @@
+---
+// Barre des pages simples : logo vers l'accueil, et le bouton WhatsApp sauf si cta={false}.
+import Wordmark from "./Wordmark.astro";
+import { proto } from "../../content/prototype";
+interface Props { cta?: boolean }
+const { cta = true } = Astro.props;
+---
+<header class="sh">
+  <div class="pg-wrap sh-in">
+    <a href="/" class="quiet" aria-label="Damien Pugin, accueil"><Wordmark size={20} /></a>
+    {cta && <a href={proto.whatsapp} class="pd-button mod-primary sh-btn">{proto.hero.cta}</a>}
+  </div>
+</header>
+
+<style>
+  .sh { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+  .sh-in { display: flex; align-items: center; justify-content: space-between; gap: var(--space-24); min-height: 64px; }
+  .sh-btn { padding: 7px 14px; white-space: nowrap; }
+  @media (max-width: 400px) { .sh-btn { padding: 6px 10px; font-size: 14px; } }
+</style>

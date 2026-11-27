@@ -1,69 +1,37 @@
 ---
-import Base from "./Base.astro";
-import Nav from "../components/Nav.astro";
-import Footer from "../components/Footer.astro";
+// Pages légales : colonne de lecture Paradigm (700px), texte en dur dans chaque page.
+import Paradigm from "./Paradigm.astro";
+import SiteHeader from "../components/prototype/SiteHeader.astro";
+import SiteFooter from "../components/prototype/SiteFooter.astro";
 
-interface Props {
-  title: string;
-  heading: string;
-  updated?: string;
-}
-
+interface Props { title: string; heading: string; updated?: string }
 const { title, heading, updated } = Astro.props;
 ---
 
-<Base title={title}>
-  <Nav />
-
-  <main class="container-narrow legal-main">
-    <h1 class="legal-title">{heading}</h1>
-    {updated && <p class="eyebrow mb-10">Mise à jour · {updated}</p>}
-
-    <article class="prose-legal text-[16px] leading-[1.75] text-[color:var(--color-ink-2)]">
-      <slot />
-    </article>
+<Paradigm title={title}>
+  <SiteHeader />
+  <main class="pg-wrap doc">
+    <h1>{heading}</h1>
+    {updated && <p class="doc-date">Mise à jour · {updated}</p>}
+    <article class="doc-body"><slot /></article>
   </main>
-
-  <Footer />
-</Base>
+  <SiteFooter />
+</Paradigm>
 
 <style>
-  .legal-main {
-    padding-top: clamp(7rem, 14vh, 10rem);
-    padding-bottom: clamp(5rem, 10vh, 7rem);
-  }
-  .legal-title {
-    font-size: clamp(2.25rem, 5vw, 3.5rem);
-    margin-bottom: 0.75rem;
-  }
-</style>
-
-<style is:global>
-  .prose-legal h2 {
-    font-size: 1.5rem;
-    margin-top: 2.5rem;
-    margin-bottom: 0.75rem;
-  }
-  .prose-legal h3 {
-    font-size: 1.15rem;
-    margin-top: 1.75rem;
-    margin-bottom: 0.5rem;
-  }
-  .prose-legal p,
-  .prose-legal ul,
-  .prose-legal ol {
-    margin-bottom: 1rem;
-  }
-  .prose-legal ul {
-    list-style: disc;
-    padding-left: 1.25rem;
-  }
-  .prose-legal a {
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-color: var(--color-hairline-2);
-  }
-  .prose-legal a:hover {
-    text-decoration-color: var(--color-gold);
-  }
+  .doc { padding-block: clamp(56px, 9vw, 112px) clamp(72px, 10vw, 128px); }
+  .doc > * { max-width: var(--content-width); }
+  h1 { font-size: clamp(34px, 5vw, 56px); line-height: 1.05; font-weight: 700; letter-spacing: -0.03em; text-wrap: balance; }
+  .doc-date { margin-top: var(--space-16); font-size: 15px; color: var(--text-muted); }
+  .doc-body { margin-top: clamp(40px, 5vw, 64px); font-size: 17px; line-height: 1.65; color: var(--text-muted); }
+  .doc-body :global(h2) { margin: 48px 0 var(--space-12); font-size: 21px; line-height: 1.3; font-weight: 600; color: var(--text); }
+  .doc-body :global(h2:first-child) { margin-top: 0; }
+  .doc-body :global(h3) { margin: var(--space-32) 0 var(--space-8); font-size: 17px; line-height: 1.4; font-weight: 600; color: var(--text); }
+  .doc-body :global(p), .doc-body :global(ul), .doc-body :global(ol) { margin-bottom: var(--space-16); }
+  .doc-body :global(ul) { padding-left: 1.2em; list-style: disc; }
+  .doc-body :global(li) { margin-bottom: var(--space-8); }
+  .doc-body :global(li::marker) { color: var(--text-faint); }
+  .doc-body :global(strong) { font-weight: 600; color: var(--text); }
+  .doc-body :global(a) { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); text-underline-offset: 3px; overflow-wrap: anywhere; }
+  .doc-body :global(a:hover) { color: var(--link-hover); text-decoration-color: color-mix(in srgb, var(--link-hover) 40%, transparent); }
 </style>

@@ -1,0 +1,14 @@
+---
+// Pied des pages simples : copyright et liens légaux (site.footer).
+import { site } from "../../content/site";
+const { footer } = site;
+---
+<footer class="pg-wrap sf caption muted">
+  <span>© {new Date().getFullYear()} {footer.copyright}</span>
+  <nav class="sf-links" aria-label="Liens légaux">{footer.links.map((l) => <a class="quiet" href={l.href}>{l.label}</a>)}</nav>
+</footer>
+
+<style>
+  .sf { display: flex; flex-wrap: wrap; gap: var(--space-16); padding-block: var(--space-32) 96px; border-top: 1px solid var(--border); }
+  .sf-links { display: flex; gap: var(--space-16); margin-left: auto; }
+</style>

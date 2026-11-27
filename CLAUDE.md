@@ -1,58 +1,45 @@
 # CLAUDE.md — www-damienp
 
-Site one-page français pour Damien Pugin.
+Site français de Damien Pugin, `damienpugin.com`.
 
-**Service** : Aider coachs et freelances à remplacer leurs appels de vente par des contenus qui vendent à leur place (méthode Conversions Asymétriques™).
+**Offre** : Expert Asymétrique — systématiser le génie d'un fondateur qui vend son expertise (source : Drive `2-BUSINESS/Produits/expert-asymetrique`, `OFFRE.md` + `SALES.md`).
 
-**Objectif business** : Capturer des emails via Kit (ex-ConvertKit), formId dans `site.kit.formId`.
+**Objectif business** : amener le visiteur à écrire sur WhatsApp. Lien `/dm` = Redirect Rule Cloudflare vers WhatsApp (pas dans le repo). Plus de formulaire Kit sur le site ; seules les pages de remerciement Kit subsistent.
 
 ## Structure du repo
 
 ```
-design/                 → logo, palette
+design/                 → logo, ancienne palette (obsolète)
 site/                   → app Astro (racine npm)
-  astro.config.mjs
   public/               → favicons
   src/
-    content/site.ts     → SOURCE DE VÉRITÉ pour toute la copy
-    components/*.astro  → un composant par section
-    layouts/            → Base, Legal, Thanks
-    pages/              → index.astro + cgv, mentions-legales, politique-de-confidentialite, thanks/*
-    styles/global.css   → Tailwind v4
+    content/prototype.ts → copy de la page d'accueil
+    content/site.ts      → témoignages historiques, podcast, liens du footer (le reste est l'ancienne copy, plus affichée)
+    components/prototype/
+      VariantFil.astro   → toute la page d'accueil (sections, styles)
+      SiteHeader.astro, SiteFooter.astro → barre et pied des pages légales / thanks
+      Wordmark.astro, Icon.astro
+    layouts/
+      Paradigm.astro     → coquille commune (head, reset, thème sombre)
+      Legal.astro, Thanks.astro
+    pages/               → index + cgv, mentions-legales, politique-de-confidentialite, thanks/*
+    styles/prototype/    → tokens.css + bundle.css
 ```
 
-Stack : **Astro 5 + Tailwind 4**. Pas de framework JS. Déploiement Cloudflare Workers (assets statiques) via `wrangler deploy` dans `.github/workflows/cloudflare-pages.yml` à chaque push sur `main` ; config dans `site/wrangler.jsonc`, secrets GitHub `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`. Domaine `damienpugin.com` attaché au Worker ; www → apex via Redirect Rule Cloudflare.
+Stack : **Astro 5**, CSS pur, pas de framework JS ni de Tailwind. Déploiement Cloudflare Workers (assets statiques) via `wrangler deploy` dans `.github/workflows/cloudflare-pages.yml` à chaque push sur `main` ; config dans `site/wrangler.jsonc`, secrets GitHub `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`. www → apex via Redirect Rule Cloudflare.
 
-## Mettre à jour le texte
+## Design
 
-**Tout le texte vit dans `site/src/content/site.ts`.** Un seul fichier, typé via `as const`. Les composants `.astro` lisent depuis cet objet — ne jamais hardcoder du texte dans un composant.
+- Design system **Paradigm** : source dans le Drive `2-BUSINESS/Marketing/brand-design/_design-system` (lire son `README.md`), copié tel quel dans `styles/prototype/`. Toute couleur vient d'un token.
+- **Thème sombre uniquement** : `data-theme="dark"` sur `<html>` dans `Paradigm.astro`. Pas de bascule.
+- Sur fond sienna, le texte est sombre (`--grey-100`), jamais blanc (contraste 3:1 insuffisant).
+- Pas de capitales ni d'espacement de lettres (règle Paradigm).
 
-Mapping section → clé :
+## Texte
 
-| Section            | Clé `site.*`     | Composant                  |
-| ------------------ | ---------------- | -------------------------- |
-| Meta SEO           | `meta`           | `layouts/Base.astro`       |
-| Nav                | `nav`            | `components/Nav.astro`     |
-| Hero               | `hero`           | `Hero.astro`               |
-| Problème           | `problem`        | `Problem.astro`            |
-| Méthode (3 étapes) | `method`         | `Method.astro`             |
-| Podcast            | `podcast`        | `Podcast.astro`            |
-| Témoignages        | `testimonials`   | `Testimonials.astro`       |
-| About              | `about`          | `About.astro`              |
-| Newsletter         | `newsletter`     | `Newsletter.astro`         |
-| Footer             | `footer`         | `Footer.astro`             |
-| Kit form ID        | `kit.formId`     | `EmailForm.astro`          |
-
-Pages légales (`cgv`, `mentions-legales`, `politique-de-confidentialite`) : texte en dur dans les `.astro` correspondants, pas dans `site.ts`.
-
-Pages de remerciement post-inscription Kit : `pages/thanks/newsletter-{subscribed,reengaged,segmented,wait}.astro` via `layouts/Thanks.astro`.
-
-## Modifier la structure / le design
-
-- Composants : `site/src/components/*.astro` — un par section, ordre d'affichage dans `pages/index.astro`.
-- Styles globaux + tokens Tailwind : `site/src/styles/global.css`.
-- Palette de référence : `design/palette.md`.
-- Favicons (light + dark, plusieurs tailles) : `site/public/`.
+- Les mots sont ceux de Damien : ne pas reformuler lors d'un travail de design, proposer et faire valider.
+- Accueil : `content/prototype.ts`. Les composants lisent cet objet, pas de texte en dur (sauf les libellés du menu dans `VariantFil.astro`).
+- Pages légales et thanks : texte en dur dans chaque `.astro`.
 
 ## Commandes
 
@@ -64,9 +51,4 @@ npm run build    # astro build
 npm run preview  # astro preview
 ```
 
-## Page d'accueil : design Paradigm (en ligne)
-
-- `pages/index.astro` → `components/prototype/VariantFil.astro`, copy dans `content/prototype.ts` (offre **Expert Asymétrique**, Drive `2-BUSINESS/Produits/expert-asymetrique`). Styles : `styles/prototype/{tokens,bundle}.css` (design system Paradigm, Drive `2-BUSINESS/Marketing/brand-design/_design-system`).
-- Thème sombre uniquement (`data-theme="dark"` sur `<html>`). CTA unique : WhatsApp via `/dm` (Redirect Rule Cloudflare, pas dans le repo). Plus de formulaire Kit sur l'accueil.
-- Reste à faire : pages légales et thanks encore sur l'ancien design (Tailwind, `site.ts`, composants `Nav`/`Footer`…). Le mapping `site.*` ci-dessus ne vaut plus que pour elles.
-- Dev : le serveur Astro sert parfois un CSS en retard d'une modification → le redémarrer.
+Le serveur de dev sert parfois un CSS en retard d'une modification : le redémarrer avant de juger un rendu.
