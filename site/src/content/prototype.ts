@@ -90,7 +90,7 @@ export const proto = {
       "J'étais dans les plus beaux pays du monde... prisonnier derrière l'écran de mon Mac.",
     ],
     punch: "La liberté, c'est de ne pas avoir besoin d'être à un endroit précis, à un moment précis.",
-    close: "Et, avec l'IA c'est devenu possible sans équipe (ou micro équipe).",
+    close: "Cette liberté, avec l'IA, c'est devenu possible sans équipe (ou micro équipe).",
   },
 
   about: {
