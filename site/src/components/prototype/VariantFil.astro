@@ -1,0 +1,395 @@
+---
+// Page d'accueil — « Le fil » : copy dans content/prototype.ts, thème sombre uniquement.
+// Un seul trait sienna raconte la page : emmêlé quand tout
+// passe par toi (problème), en dents de scie (revenus), puis le plan en trois points numérotés et la barre 10/80/10.
+// Paradigm strict : fond neutre, police système, traits 1px, sienna rare (le trait, l'action, le panneau final).
+import Icon from "./Icon.astro";
+import Wordmark from "./Wordmark.astro";
+import { site } from "../../content/site";
+import { proto } from "../../content/prototype";
+
+// uid : préfixe des ancres
+interface Props { uid?: string }
+const { uid = "fil" } = Astro.props;
+const { podcast, testimonials: legacy, footer } = site;
+const { whatsapp, hero, outcomes, problem, philosophy, quotes, why, about, contact, fil } = proto;
+// Typo française : espace fine insécable avant ! ? ; : » et après «
+const fr = (t: string) => t.replace(/ ([!?;:»])/g, " $1").replace(/« /g, "« ");
+
+// Témoignages : nouveaux puis anciens, même format
+type Q = { text: string; name: string; title: string; video?: string };
+const allQuotes: Q[] = [
+  ...quotes.items.map((q) => ({ text: q.text, name: q.name, title: q.title })),
+  { text: legacy.featured.quote, name: legacy.featured.name, title: legacy.featured.title, video: legacy.featured.youtubeId },
+  ...legacy.others.map((q) => ({ text: q.quote, name: q.name, title: q.title })),
+];
+
+// Aléatoire à graine fixe : les dessins ne changent pas d'un build à l'autre
+let seed = 11;
+const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+const r = (a: number, b: number) => a + rnd() * (b - a);
+
+// Schéma problème : trois domaines en triangle autour de toi, câbles emmêlés (spline Catmull-Rom)
+type P = { x: number; y: number };
+const C = { x: 280, y: 180 }, R = 155;
+const pos = [-150, -30, 90].map((deg) => ({ x: C.x + R * Math.cos((deg * Math.PI) / 180), y: C.y + R * Math.sin((deg * Math.PI) / 180) }));
+const fronts = problem.fronts.map((label, i) => ({ label, ...pos[i] }));
+const spline = (pts: P[]) => {
+  let d = `M${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] ?? pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] ?? p2;
+    const c1 = { x: p1.x + (p2.x - p0.x) / 4.5, y: p1.y + (p2.y - p0.y) / 4.5 };
+    const c2 = { x: p2.x - (p3.x - p1.x) / 4.5, y: p2.y - (p3.y - p1.y) / 4.5 };
+    d += ` C${c1.x.toFixed(1)} ${c1.y.toFixed(1)} ${c2.x.toFixed(1)} ${c2.y.toFixed(1)} ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+  }
+  return d;
+};
+const RX = 290, RY = 215;
+const ties: string[] = [];
+fronts.forEach((f) => {
+  for (let n = 0; n < 7; n++) {
+    let t = r(0, Math.PI * 2);
+    const dir = n % 2 ? 1 : -1;
+    const pts: P[] = [C];
+    const loops = 2 + Math.floor(rnd() * 3);
+    for (let k = 0; k < loops; k++) {
+      t += dir * r(1.2, 1.7);
+      const rad = k === 0 ? r(0.15, 0.3) : r(0.3, 1);
+      const sq = r(0.8, 1.2);
+      pts.push({ x: C.x + Math.cos(t) * RX * rad * sq, y: C.y + Math.sin(t) * RY * rad / sq });
+    }
+    pts.push(f);
+    ties.push(spline(pts));
+  }
+});
+
+// Dents de scie pleine largeur : revenus instables
+let saw = "M0 62";
+for (let x = 34, up = true; x < 1440; x += r(30, 64), up = !up) saw += ` L${x.toFixed(0)} ${(up ? r(8, 40) : r(58, 92)).toFixed(0)}`;
+saw += " L1440 30";
+---
+
+<div class="f">
+  <header class="f-bar">
+    <div class="f-wrap f-bar-in">
+      <a href={`#${uid}-top`} class="quiet" aria-label="Damien Pugin, accueil"><Wordmark size={20} /></a>
+      <nav class="f-nav" aria-label="Sections">
+        <a class="quiet muted" href={`#${uid}-plan`}>Le plan</a>
+        <a class="quiet muted" href={`#${uid}-temoignages`}>Témoignages</a>
+        <a class="quiet muted" href={`#${uid}-podcast`}>Podcast</a>
+        <a class="quiet muted" href={`#${uid}-about`}>À propos</a>
+      </nav>
+      <div class="f-bar-actions">
+        <a href={whatsapp} class="pd-button mod-primary f-btn-s">{hero.cta}</a>
+      </div>
+    </div>
+  </header>
+
+  <main id={`${uid}-top`}>
+    <section class="f-hero">
+      <div class="f-wrap f-hero-main">
+        <div class="f-hero-copy">
+          <p class="f-who-for">{fr(hero.avatar)}</p>
+          <h1 class="f-display">{hero.title}</h1>
+          <div class="f-cta">
+            <p class="f-cta-lead">{fr(fil.heroLead)}</p>
+            <a href={whatsapp} class="pd-button mod-primary f-btn">{fil.heroCta}<Icon name="arrow-right" size={20} /></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="f-sec" id={`${uid}-probleme`}>
+      <div class="f-wrap f-problem">
+        <div class="f-problem-copy">
+          {problem.questions.map((q) => <p class="f-ask">{fr(q)}</p>)}
+          <h2 class="f-h2">{problem.title}</h2>
+        </div>
+        <svg class="f-tangle" viewBox="-40 -50 640 440" role="img" aria-label={`Tu jongles entre ${problem.fronts.join(", ").toLowerCase()} : tout passe par toi.`}>
+          {ties.map((d) => <path class="f-tie" d={d} />)}
+          {fronts.map((n) => (
+            <g class="f-node">
+              <rect x={n.x - 76} y={n.y - 22} width="152" height="44" rx="22" />
+              <text x={n.x} y={n.y} text-anchor="middle" dominant-baseline="central">{n.label}</text>
+            </g>
+          ))}
+          <g class="f-you">
+            <circle cx={C.x} cy={C.y} r="46" />
+            <text x={C.x} y={C.y} text-anchor="middle" dominant-baseline="central">{problem.center}</text>
+          </g>
+        </svg>
+      </div>
+      <div class="f-wrap f-outcome">
+        <span class="f-outcome-k">{problem.outcomeLabel}</span>
+        <p>{problem.outcome}</p>
+      </div>
+      <svg class="f-saw" viewBox="0 0 1440 100" preserveAspectRatio="none" aria-hidden="true"><path d={saw} /></svg>
+    </section>
+
+    <section class="f-band" aria-labelledby={`${uid}-plan`}>
+      <div class="f-wrap f-band-in">
+        <div class="f-band-head">
+          <h2 class="f-h2 f-h2-xl" id={`${uid}-plan`}><span>{fr(fil.planLead)}</span> {fil.planTitle}</h2>
+          <p class="f-band-intro">{philosophy.intro}</p>
+        </div>
+        <div class="f-split" role="img" aria-label={philosophy.split.map((p) => `${p.pct} ${p.label.toLowerCase()}`).join(", ")}>
+          {philosophy.split.map((p) => (
+            <div class:list={["f-split-part", { "is-you": p.you }]}>
+              <span class="f-split-bar"><span class="f-split-in">{p.label}</span></span>
+              <strong>{p.pct}</strong>
+              <span class="f-split-l">{p.label}</span>
+            </div>
+          ))}
+        </div>
+        <p class="f-band-body">{philosophy.body.split(/(\d+\s%)/).map((t) => /^\d+\s%$/.test(t)
+          ? <strong class={t.startsWith("80") ? "is-exec" : "is-you"}>{t.replace(/\s/, "\u00A0")}</strong>
+          : fr(t))}</p>
+      </div>
+    </section>
+
+    <section class="f-sec" aria-labelledby={`${uid}-etapes`}>
+      <div class="f-wrap">
+        <h2 class="f-h2 f-h2-xl" id={`${uid}-etapes`}><span>{fr(fil.stepsLead)}</span> {fil.stepsTitle}</h2>
+        <ol class="f-lines">
+          {outcomes.map((o, i) => <li><span class="f-num" aria-hidden="true">{i + 1}</span><p>{o.title}{o.text && <span> {o.text}</span>}</p></li>)}
+        </ol>
+      </div>
+    </section>
+
+    <section class="f-sec" id={`${uid}-temoignages`}>
+      <div class="f-wrap">
+        <h2 class="f-h2 f-h2-head">{quotes.title}</h2>
+        <ul class="f-quotes">
+          {allQuotes.map((q) => (
+            <li>
+              <p class="f-who"><strong>{q.name}</strong><span>{fr(q.title)}</span></p>
+              <div class="f-said">
+                <blockquote>{fr(q.text)}</blockquote>
+                {q.video && (
+                  <div class="f-video">
+                    <iframe src={`https://www.youtube.com/embed/${q.video}`} title={`Témoignage ${q.name}`} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                  </div>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="f-sec" id={`${uid}-podcast`}>
+      <div class="f-wrap">
+        <div class="f-head-row">
+          <h2 class="f-h2">{podcast.title}</h2>
+          <p class="f-side">{podcast.sub}</p>
+        </div>
+        <div class="f-frame">
+          <iframe src={`https://player.captivate.fm/show/${podcast.captivateShowId}`} title="Podcast Damien Pugin" loading="lazy" scrolling="no" allow="clipboard-write"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section class="f-sec" id={`${uid}-pourquoi`}>
+      <div class="f-wrap f-why">
+        <h2 class="f-why-punch">{why.punch}</h2>
+        <div class="f-why-lines">{why.lines.map((l) => <p>{l}</p>)}</div>
+        <p class="f-why-close">{why.close}</p>
+      </div>
+    </section>
+
+    <section class="f-sec" id={`${uid}-about`}>
+      <div class="f-wrap">
+        <h2 class="f-h2 f-h2-head">{about.title}</h2>
+        <ol class="f-time">
+          {about.timeline.map((t) => (
+            <li><span class="f-year">{t.year}</span><p>{t.text}</p></li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="f-close" id={`${uid}-contact`}>
+      <div class="f-wrap">
+        <div class="f-panel">
+          <p class="f-panel-lead">{fr(contact.lead)}</p>
+          <h2 class="f-panel-title">{contact.title}</h2>
+          <p class="f-panel-sub">{contact.sub}</p>
+          <div class="f-cta">
+            <a href={whatsapp} class="pd-button mod-primary f-btn">{hero.cta}<Icon name="arrow-right" size={20} /></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="f-wrap f-footer caption muted">
+    <span>© {new Date().getFullYear()} {footer.copyright}</span>
+    <nav class="f-footer-links">{footer.links.map((l) => <a class="quiet" href={l.href}>{l.label}</a>)}</nav>
+  </footer>
+</div>
+
+<style>
+  .f {
+    --pad: clamp(20px, 5vw, 72px);
+    --gap-sec: clamp(64px, 7.8vw, 112px);
+    --thread: 2px;
+    --ink-on-accent: var(--grey-100);
+    --accent-press: color-mix(in srgb, var(--accent) 86%, var(--grey-100));
+    overflow-x: clip;
+  }
+  .f-wrap { max-width: calc(1184px + 2 * var(--pad)); margin-inline: auto; padding-inline: var(--pad); }
+  .f [id] { scroll-margin-top: 88px; }
+
+  /* Barre */
+  .f-bar { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+  .f-bar-in { display: flex; align-items: center; gap: var(--space-24); min-height: 64px; }
+  .f-nav { display: flex; gap: var(--space-24); margin-left: auto; }
+  .f-nav a { padding-block: var(--space-8); transition: color 0.15s ease; }
+  .f-bar-actions { display: flex; align-items: center; gap: var(--space-12); }
+
+  /* Action : sienna, texte sombre (5,3:1) */
+  .f .pd-button.mod-primary { display: inline-flex; align-items: center; gap: var(--space-12); color: var(--ink-on-accent); text-decoration: none; transition: background 0.15s ease, border-color 0.15s ease; }
+  .f .pd-button.mod-primary:hover { background: var(--accent-press); border-color: var(--accent-press); }
+  .f-btn-s { padding: 7px 14px; white-space: nowrap; }
+  .f-btn { padding: 16px 24px 16px 28px; font-size: 18px; border-radius: var(--radius-l); }
+  .f-btn :global(svg) { transition: transform 0.2s ease; }
+  .f-btn:hover :global(svg) { transform: translateX(4px); }
+
+  /* Hero : sienna plein cadre, titre XXL (repris de A3R3) */
+  .f-hero { display: grid; min-height: min(calc(100svh - 64px), 900px); background: var(--accent); color: var(--ink-on-accent); }
+  .f-hero ::selection { background: color-mix(in srgb, var(--grey-100) 25%, transparent); }
+  .f-hero :global(:focus-visible) { outline-color: var(--grey-100); }
+  .f-hero-main { display: grid; align-content: center; width: 100%; padding-block: clamp(32px, 6svh, 72px); }
+  .f-display { font-size: clamp(52px, min(10.5vw, 16.5svh), 156px); line-height: 0.95; font-weight: 700; letter-spacing: -0.04em; max-width: 11ch; text-wrap: balance; }
+  .f-who-for { margin-bottom: clamp(20px, 3vh, 32px); font-size: clamp(20px, 2vw, 27px); line-height: 1.35; font-weight: 500; letter-spacing: -0.015em; max-width: 25em; text-wrap: balance; }
+  .f-cta-lead { font-size: clamp(22px, 2.2vw, 30px); line-height: 1.3; font-weight: 500; letter-spacing: -0.015em; }
+  .f-cta { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-16); margin-top: clamp(32px, 5vh, 56px); }
+
+  /* Sections */
+  .f-sec { padding-block: var(--gap-sec); }
+  .f-h2 { font-size: clamp(32px, 4.4vw, 60px); line-height: 1.05; font-weight: 700; letter-spacing: -0.03em; text-wrap: balance; }
+  .f-h2-xl { font-size: clamp(38px, 6vw, 84px); line-height: 1.02; letter-spacing: -0.035em; }
+  .f-h2-xl span { display: block; color: var(--text-muted); }
+  .f-h2-head { max-width: 14em; margin-bottom: clamp(48px, 6vw, 88px); }
+
+  /* Problème : tout passe par toi */
+  .f-hero + .f-sec { padding-top: clamp(64px, 8vw, 120px); padding-bottom: clamp(56px, 7vw, 104px); }
+  .f-problem { display: grid; grid-template-columns: 5fr 7fr; align-items: center; gap: 48px; }
+  .f-ask { font-size: clamp(19px, 1.7vw, 23px); line-height: 1.4; color: var(--text-muted); max-width: 21em; }
+  .f-ask + .f-ask { margin-top: var(--space-16); }
+  .f-ask + .f-h2 { margin-top: var(--space-32); }
+  .f-tangle { display: block; width: 100%; height: auto; overflow: visible; }
+  .f-tie { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .f-node rect { fill: var(--bg); stroke: var(--text); stroke-width: 1.5; }
+  .f-node text { font: 600 17px var(--font-sans); fill: var(--text); letter-spacing: -0.01em; }
+  .f-you circle { fill: var(--text); stroke: var(--bg); stroke-width: 5; paint-order: stroke; }
+  .f-you text { font: 700 22px var(--font-sans); fill: var(--bg); letter-spacing: -0.02em; }
+  .f-outcome { display: flex; align-items: baseline; gap: var(--space-24); margin-top: clamp(56px, 7vw, 104px); }
+  .f-outcome-k { font-size: 15px; color: var(--text-muted); }
+  .f-outcome p { font-size: clamp(24px, 3vw, 40px); line-height: 1.15; font-weight: 600; letter-spacing: -0.025em; }
+  .f-saw { display: block; width: 100%; height: clamp(72px, 9vw, 128px); margin-top: var(--space-32); overflow: visible; }
+  .f-saw path { fill: none; stroke: var(--accent); stroke-width: var(--thread); stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+
+  /* Plan : trois points numérotés, grand chiffre sienna à gauche */
+  .f-lines { margin-top: clamp(48px, 6vw, 88px); }
+  .f-lines li { display: grid; grid-template-columns: clamp(64px, 15vw, 216px) minmax(0, 1fr); align-items: center; padding-block: clamp(28px, 3.4vw, 48px); border-top: 1px solid var(--border); }
+  .f-lines li:last-child { border-bottom: 1px solid var(--border); }
+  .f-num { font-size: clamp(64px, 10vw, 144px); line-height: 0.9; font-weight: 700; letter-spacing: -0.04em; color: var(--accent); font-variant-numeric: lining-nums; }
+  .f-lines p { font-size: clamp(24px, 3.2vw, 44px); line-height: 1.12; font-weight: 600; letter-spacing: -0.03em; max-width: 20em; text-wrap: balance; }
+  .f-lines p span { color: var(--text-muted); }
+
+  /* Expert asymétrique : 10 / 80 / 10 sur la seule bande inversée */
+  .f-band { background: var(--grey-100); color: var(--grey-10); --band-quiet: var(--grey-40); --band-bar: var(--grey-50); }
+  :global([data-theme="dark"]) .f-band { background: #141414; }
+  .f-band-in { display: flex; flex-direction: column; gap: clamp(56px, 7vw, 104px); padding-block: var(--gap-sec); }
+  .f-band-head { display: flex; flex-direction: column; gap: clamp(24px, 3vw, 40px); }
+  .f-band .f-h2-xl span { color: var(--band-quiet); }
+  .f-band-intro { font-size: clamp(20px, 2vw, 27px); line-height: 1.35; color: var(--band-quiet); max-width: 24em; text-wrap: balance; }
+  .f-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 8fr) minmax(0, 1fr); gap: 6px; }
+  .f-split-part { display: flex; flex-direction: column; align-items: center; white-space: nowrap; }
+  .f-split-bar { display: grid; place-items: center; align-self: stretch; height: clamp(44px, 6vw, 84px); border-radius: var(--radius-m); background: var(--band-bar); }
+  .f-split-part.is-you .f-split-bar { background: var(--accent); }
+  .f-split-in { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; color: var(--grey-100); }
+  .f-split-part strong { margin-top: var(--space-24); font-size: clamp(26px, 3.4vw, 48px); line-height: 1; font-weight: 700; letter-spacing: -0.035em; font-variant-numeric: tabular-nums; color: var(--band-bar); }
+  .f-split-part.is-you strong { color: var(--accent); }
+  .f-split-l { display: none; margin-top: var(--space-8); font-size: 14px; color: var(--band-quiet); }
+  .f-band-body strong { font-weight: 700; }
+  .f-band-body .is-exec { color: var(--band-bar); }
+  .f-band-body .is-you { color: var(--accent); }
+  .f-band-body { font-size: clamp(22px, 2.6vw, 36px); line-height: 1.25; font-weight: 500; letter-spacing: -0.02em; max-width: 26em; text-wrap: balance; }
+
+  /* Témoignages : une ligne par personne, le nom à gauche */
+  .f-quotes li { display: grid; grid-template-columns: 4fr 8fr; gap: var(--space-24) 48px; padding-block: clamp(32px, 3.6vw, 52px); border-top: 1px solid var(--border); }
+  .f-quotes li:last-child { padding-bottom: 0; }
+  .f-who { display: flex; flex-direction: column; gap: var(--space-4); }
+  .f-who strong { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+  .f-who span { font-size: 15px; line-height: 1.45; color: var(--text-muted); max-width: 22em; }
+  .f-said blockquote { font-size: clamp(19px, 1.75vw, 23px); line-height: 1.45; letter-spacing: -0.01em; max-width: 34em; }
+  .f-video { aspect-ratio: 16 / 9; max-width: 640px; margin-top: var(--space-32); border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; background: var(--bg-sunken); }
+  .f-video iframe { width: 100%; height: 100%; }
+
+  /* Podcast */
+  .f-head-row { display: grid; grid-template-columns: 5fr 7fr; align-items: end; gap: var(--space-16) 48px; margin-bottom: clamp(40px, 5vw, 72px); }
+  .f-side { font-size: clamp(19px, 1.7vw, 23px); line-height: 1.4; color: var(--text-muted); max-width: 24em; }
+  .f-frame { border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; background: var(--bg-sunken); }
+  .f-frame iframe { width: 100%; height: 600px; }
+
+  /* Pourquoi */
+  .f-why-lines { display: flex; flex-direction: column; gap: var(--space-16); margin-top: clamp(40px, 5vw, 72px); }
+  .f-why-close { margin-top: var(--space-16); }
+  .f-why-lines p, .f-why-close { font-size: clamp(20px, 1.9vw, 26px); line-height: 1.4; color: var(--text-muted); max-width: 30em; }
+  .f-why-punch { font-size: clamp(30px, 5vw, 72px); line-height: 1.06; font-weight: 700; letter-spacing: -0.035em; max-width: 15em; text-wrap: balance; }
+
+  /* À propos : frise */
+  .f-time { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; padding-top: 40px; }
+  .f-time::before { content: ""; position: absolute; top: 6px; left: 0; width: 100vw; height: 1px; background: var(--border); }
+  .f-time li { position: relative; display: flex; flex-direction: column; gap: var(--space-12); }
+  .f-time li::before { content: ""; position: absolute; top: -40px; left: 0; width: 13px; height: 13px; box-sizing: border-box; border: 1.5px solid var(--text); border-radius: 50%; background: var(--bg); }
+  .f-time li:last-child::before { border-color: var(--accent); background: var(--accent); }
+  .f-year { font-size: clamp(26px, 2.8vw, 38px); line-height: 1; font-weight: 700; letter-spacing: -0.03em; }
+  .f-time p { font-size: 18px; line-height: 1.5; color: var(--text-muted); max-width: 22em; }
+
+  /* Fin : le seul aplat sienna de la page */
+  .f-close { padding-bottom: clamp(24px, 4vw, 56px); }
+  .f-panel { padding: clamp(40px, 8vw, 120px) clamp(24px, 7vw, 104px); border-radius: var(--radius-xl); background: var(--accent); color: var(--ink-on-accent); }
+  .f-panel ::selection { background: color-mix(in srgb, var(--grey-100) 25%, transparent); }
+  .f-panel-lead { font-size: clamp(18px, 1.6vw, 22px); line-height: 1.4; max-width: 30em; }
+  .f-panel-title { margin-top: var(--space-24); font-size: clamp(38px, 6.2vw, 88px); line-height: 1.02; font-weight: 700; letter-spacing: -0.035em; max-width: 11em; text-wrap: balance; }
+  .f-panel-sub { margin-top: var(--space-32); font-size: clamp(20px, 2vw, 27px); line-height: 1.3; font-weight: 500; letter-spacing: -0.015em; }
+  .f .f-panel .pd-button.mod-primary, .f .f-hero .pd-button.mod-primary { background: var(--grey-100); border-color: var(--grey-100); color: var(--grey-00); }
+  .f .f-panel .pd-button.mod-primary:hover, .f .f-hero .pd-button.mod-primary:hover { background: var(--grey-90); border-color: var(--grey-90); }
+  .f-panel :global(:focus-visible) { outline-color: var(--grey-100); }
+
+  .f-footer { display: flex; flex-wrap: wrap; gap: var(--space-16); padding-block: var(--space-32) 96px; }
+  .f-footer-links { display: flex; gap: var(--space-16); margin-left: auto; }
+
+  /* Segments de 10 % trop étroits pour porter leur nom : il repasse dessous */
+  @media (max-width: 1040px) {
+    .f-split-in { display: none; }
+    .f-split-l { display: block; }
+    .f-split-part:first-child { align-items: flex-start; }
+    .f-split-part:last-child { align-items: flex-end; }
+  }
+  @media (max-width: 860px) {
+    .f-nav { display: none; }
+    .f-bar-actions { margin-left: auto; }
+    .f-hero { min-height: 0; }
+    .f-hero-main { padding-block: 56px; }
+          .f-problem, .f-head-row, .f-quotes li { grid-template-columns: 1fr; }
+    .f-problem { gap: var(--space-32); }
+    .f-node, .f-you { transform-box: fill-box; transform-origin: center; transform: scale(1.3); }
+    .f-you { transform: scale(1.1); }
+    .f-saw { width: 300%; }
+    .f-outcome { flex-direction: column; gap: var(--space-8); }
+    .f-quotes li { gap: var(--space-16); }
+    .f-said { order: -1; }
+    .f-time { grid-template-columns: 1fr; gap: 40px; padding: 0 0 0 36px; }
+    .f-time::before { top: 8px; bottom: 8px; left: 6px; width: 1px; height: auto; }
+    .f-time li::before { top: 8px; left: -36px; }
+    .f-frame iframe { height: 520px; }
+    .f-btn { padding: 14px 20px 14px 22px; font-size: 17px; }
+  }
+  @media (max-width: 400px) {
+    .f-btn-s { padding: 6px 10px; font-size: 14px; }
+  }
+</style>

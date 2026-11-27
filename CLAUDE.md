@@ -64,9 +64,9 @@ npm run build    # astro build
 npm run preview  # astro preview
 ```
 
-## En cours : refonte design (branche `prototype/paradigm-redesign`)
+## Page d'accueil : design Paradigm (en ligne)
 
-- Prototype sur `/prototype` (`components/prototype/VariantA3.astro`, copy dans `content/prototype.ts`), design system Paradigm, offre **Expert Asymétrique** (Drive `102-expert-asymetrique/OFFRE.md` + `SALES.md`).
-- Direction retenue : A3R3 (grand format, hero + newsletter sienna). Section problème : choisir entre les variantes du sélecteur (A3R3, B, P, O, L).
-- Reste à faire : Damien finalise l'offre et les mots → mettre à jour `prototype.ts` → passer tout le site sous ce design (pages légales et thanks incluses) → publier.
-- Ne pas toucher `site.ts` (site en ligne, encore « Conversions Asymétriques™ ») avant la bascule.
+- `pages/index.astro` → `components/prototype/VariantFil.astro`, copy dans `content/prototype.ts` (offre **Expert Asymétrique**, Drive `2-BUSINESS/Produits/expert-asymetrique`). Styles : `styles/prototype/{tokens,bundle}.css` (design system Paradigm, Drive `2-BUSINESS/Marketing/brand-design/_design-system`).
+- Thème sombre uniquement (`data-theme="dark"` sur `<html>`). CTA unique : WhatsApp via `/dm` (Redirect Rule Cloudflare, pas dans le repo). Plus de formulaire Kit sur l'accueil.
+- Reste à faire : pages légales et thanks encore sur l'ancien design (Tailwind, `site.ts`, composants `Nav`/`Footer`…). Le mapping `site.*` ci-dessus ne vaut plus que pour elles.
+- Dev : le serveur Astro sert parfois un CSS en retard d'une modification → le redémarrer.

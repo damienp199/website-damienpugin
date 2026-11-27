@@ -1,15 +1,23 @@
 /**
- * PROTOTYPE — copy de la variante A3 (/prototype), repositionnée sur Expert Asymétrique.
+ * Copy de la page d'accueil (offre Expert Asymétrique), lue par components/prototype/VariantFil.astro.
  * Mots repris tels quels de la sales page (Drive : 102-expert-asymetrique/SALES.md).
  * Page d'accueil : philosophie + promesse, pas l'offre (ni prix, ni garantie, ni phases).
- * Le site réel continue de lire site.ts ; rien ici n'est en production.
+ * Les pages légales et thanks lisent encore site.ts.
  */
 
 export const proto = {
   whatsapp: "/dm",
 
+  // Onglet du navigateur et résultat Google. Composé par Claude à partir des phrases de la page, à valider.
+  meta: {
+    title: "Damien Pugin — Un business qui n'a plus besoin de tes bras",
+    description: "Tu es fondateur et tu vends ton expertise ? Mon plan d'évasion pour toi : devenir un expert asymétrique et systématiser ton génie.",
+  },
+
   hero: {
     title: "Un business qui n'a plus besoin de tes bras.",
+    // Désigne l'avatar, au-dessus du titre (variante FIL)
+    avatar: "Tu es fondateur et tu vends ton expertise ?",
     ctaLead: "Je veux systématiser mon génie",
     cta: "Envoyer un WhatsApp",
   },
@@ -94,10 +102,22 @@ export const proto = {
     ],
   },
 
+  // Variante FIL : le plan d'évasion titre la section 10/80/10, puis « Systématise ton génie » titre les 3 points
+  fil: {
+    planLead: "Mon plan d'évasion pour toi :",
+    planTitle: "Devenir un expert asymétrique.",
+    // Transition plan → comment (proposée par Claude, à valider)
+    stepsLead: "Comment ?",
+    stepsTitle: "Systématise ton génie.",
+    // CTA du hero : question, puis bouton
+    heroLead: "Tu veux systématiser ton génie ?",
+    heroCta: "WhatsApp moi",
+  },
+
   // Fin de page : WhatsApp en principal
   contact: {
     lead: "Si ça te ressemble et que tu aimerais travailler avec moi :",
-    title: "Lance-moi un message sur mon WhatsApp.",
+    title: "Lance-moi un WhatsApp.",
     sub: "Et, on voit comment je peux t'aider au mieux.",
   },
 
